@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Eye, EyeOff, Building2, Stethoscope, ClipboardList } from 'lucide-react';
+import { Eye, EyeOff, Building2, Stethoscope, ClipboardList, Shield } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { UserRole } from '@/types';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import medsightLogo from '@/assets/medsight-logo.jpg';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -60,20 +61,16 @@ export default function LoginPage() {
       {/* Left Panel - Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-sidebar flex-col justify-between p-12">
         <div>
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-sidebar-primary">
-              <Shield className="h-6 w-6 text-sidebar-primary-foreground" />
-            </div>
-            <div>
-              <span className="text-xl font-semibold text-sidebar-foreground">MedSight</span>
-              <span className="text-sm text-sidebar-foreground/60 block">Analytics</span>
-            </div>
-          </div>
+          <img 
+            src={medsightLogo} 
+            alt="MedSight Analytics" 
+            className="h-16 w-auto object-contain"
+          />
         </div>
 
         <div className="space-y-6">
-          <h1 className="text-3xl font-bold text-sidebar-foreground leading-tight">
-            AI-Powered Decision Intelligence for Nigerian Healthcare
+          <h1 className="text-3xl font-bold text-sidebar-foreground leading-tight tracking-wide">
+            SMARTER INSIGHTS. BETTER CARE.
           </h1>
           <p className="text-lg text-sidebar-foreground/70 leading-relaxed">
             Reduce administrative workload, flag high-risk patients early, and identify operational inefficiencies — all in one platform.
@@ -106,14 +103,12 @@ export default function LoginPage() {
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md space-y-8">
           {/* Mobile Logo */}
-          <div className="lg:hidden flex items-center gap-3 justify-center mb-8">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary">
-              <Shield className="h-6 w-6 text-primary-foreground" />
-            </div>
-            <div>
-              <span className="text-xl font-semibold text-foreground">MedSight</span>
-              <span className="text-sm text-muted-foreground block">Analytics</span>
-            </div>
+          <div className="lg:hidden flex justify-center mb-8">
+            <img 
+              src={medsightLogo} 
+              alt="MedSight Analytics" 
+              className="h-14 w-auto object-contain"
+            />
           </div>
 
           <div className="text-center lg:text-left">

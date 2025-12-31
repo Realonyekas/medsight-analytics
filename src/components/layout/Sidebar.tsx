@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
+import medsightLogo from '@/assets/medsight-logo.jpg';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, roles: ['hospital_admin', 'clinician', 'operations'] },
@@ -42,14 +43,12 @@ export function Sidebar() {
   return (
     <aside className="flex h-screen w-64 flex-col bg-sidebar border-r border-sidebar-border">
       {/* Logo */}
-      <div className="flex h-16 items-center gap-2 px-4 border-b border-sidebar-border">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sidebar-primary">
-          <Shield className="h-5 w-5 text-sidebar-primary-foreground" />
-        </div>
-        <div>
-          <span className="text-base font-semibold text-sidebar-foreground">MedSight</span>
-          <span className="text-xs text-sidebar-foreground/60 block">Analytics</span>
-        </div>
+      <div className="flex h-16 items-center px-4 border-b border-sidebar-border">
+        <img 
+          src={medsightLogo} 
+          alt="MedSight Analytics" 
+          className="h-10 w-auto object-contain"
+        />
       </div>
 
       {/* Hospital Info */}
