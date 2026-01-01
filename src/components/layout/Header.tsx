@@ -1,5 +1,6 @@
 import { Bell, Search, ChevronDown } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSubscription } from '@/hooks/useHospitalData';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -18,6 +19,7 @@ interface HeaderProps {
 
 export function Header({ title, subtitle }: HeaderProps) {
   const { user, hospital } = useAuth();
+  const { data: subscription } = useSubscription(hospital?.id);
 
   const subscriptionLabel = {
     starter: 'Starter',
@@ -44,9 +46,9 @@ export function Header({ title, subtitle }: HeaderProps) {
         </div>
 
         {/* Subscription Badge */}
-        {hospital && (
+        {subscription && (
           <Badge variant="outline" className="hidden sm:inline-flex">
-            {subscriptionLabel[hospital.subscriptionTier]} Plan
+            {subscriptionLabel[subscription.plan]} Plan
           </Badge>
         )}
 
