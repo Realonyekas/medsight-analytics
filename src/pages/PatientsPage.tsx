@@ -1,23 +1,44 @@
 import { useState } from 'react';
-import { Search, Filter, AlertTriangle, ChevronRight, User } from 'lucide-react';
+import { Search, Filter, AlertTriangle, ChevronRight, User, UserPlus } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
-import { mockPatients } from '@/data/mockData';
-import { Patient } from '@/types';
+import { useAuth } from '@/contexts/AuthContext';
+import { usePatients } from '@/hooks/useHospitalData';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import type { Patient } from '@/types';
 
 export default function PatientsPage() {
+  const { hospital } = useAuth();
+  const { data: dbPatients, isLoading } = usePatients(hospital?.id);
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [riskFilter, setRiskFilter] = useState<'all' | 'high' | 'medium' | 'low'>('all');
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
 
-  const filteredPatients = mockPatients.filter(patient => {
+  // Transform database patients to UI format
+  const patients: Patient[] = dbPatients?.map(p => ({
+    id: p.id,
+    patientId: p.mrn,
+    name: `${p.first_name} ${p.last_name}`,
+    age: p.date_of_birth ? new Date().getFullYear() - new Date(p.date_of_birth).getFullYear() : 0,
+    gender: (p.gender as 'male' | 'female') || 'male',
+    department: '', // Would need department lookup
+    admissionDate: p.admission_date || '',
+    riskLevel: p.risk_level === 'critical' ? 'high' : p.risk_level,
+    riskScore: p.risk_score || 0,
+    conditions: p.conditions || [],
+    lastVisit: p.updated_at,
+    flags: p.ai_flags || [],
+  })) || [];
+
+  const filteredPatients = patients.filter(patient => {
     const matchesSearch = patient.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           patient.patientId.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesRisk = riskFilter === 'all' || patient.riskLevel === riskFilter;
@@ -29,6 +50,30 @@ export default function PatientsPage() {
     medium: { label: 'Medium Risk', className: 'risk-badge-medium', bgClass: 'bg-risk-medium/10', textClass: 'text-risk-medium' },
     low: { label: 'Low Risk', className: 'risk-badge-low', bgClass: 'bg-risk-low/10', textClass: 'text-risk-low' },
   };
+
+  const highCount = patients.filter(p => p.riskLevel === 'high').length;
+  const mediumCount = patients.filter(p => p.riskLevel === 'medium').length;
+  const lowCount = patients.filter(p => p.riskLevel === 'low').length;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen">
+        <Header 
+          title="Patient Insights" 
+          subtitle="Loading patient data..." 
+        />
+        <div className="p-6 space-y-6">
+          <Skeleton className="h-10 w-full max-w-md" />
+          <div className="grid grid-cols-3 gap-4">
+            {[1, 2, 3].map((i) => (
+              <Skeleton key={i} className="h-24 rounded-xl" />
+            ))}
+          </div>
+          <Skeleton className="h-96 rounded-xl" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">
@@ -75,15 +120,15 @@ export default function PatientsPage() {
         <div className="grid grid-cols-3 gap-4">
           <div className="metric-card">
             <p className="stat-label">High Risk</p>
-            <p className="stat-value text-risk-high">{mockPatients.filter(p => p.riskLevel === 'high').length}</p>
+            <p className="stat-value text-risk-high">{highCount}</p>
           </div>
           <div className="metric-card">
             <p className="stat-label">Medium Risk</p>
-            <p className="stat-value text-risk-medium">{mockPatients.filter(p => p.riskLevel === 'medium').length}</p>
+            <p className="stat-value text-risk-medium">{mediumCount}</p>
           </div>
           <div className="metric-card">
             <p className="stat-label">Low Risk</p>
-            <p className="stat-value text-risk-low">{mockPatients.filter(p => p.riskLevel === 'low').length}</p>
+            <p className="stat-value text-risk-low">{lowCount}</p>
           </div>
         </div>
 
@@ -93,42 +138,55 @@ export default function PatientsPage() {
             <h2 className="section-title">Patient List</h2>
             <span className="text-sm text-muted-foreground">{filteredPatients.length} patients</span>
           </div>
-          <div className="space-y-2">
-            {filteredPatients.map((patient) => {
-              const config = riskConfig[patient.riskLevel];
-              return (
-                <button
-                  key={patient.id}
-                  onClick={() => setSelectedPatient(patient)}
-                  className="w-full flex items-center gap-4 p-4 rounded-lg border border-border hover:bg-accent/30 transition-colors text-left"
-                >
-                  <div className={cn('flex h-11 w-11 items-center justify-center rounded-full', config.bgClass)}>
-                    <User className={cn('h-5 w-5', config.textClass)} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-medium text-foreground">{patient.name}</h4>
-                      <span className={config.className}>{config.label}</span>
+
+          {filteredPatients.length === 0 ? (
+            <div className="text-center py-12">
+              <UserPlus className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+              <h3 className="text-lg font-medium text-foreground mb-2">No patients found</h3>
+              <p className="text-muted-foreground max-w-sm mx-auto">
+                {patients.length === 0 
+                  ? "Your hospital doesn't have any patients yet. Patients will appear here once they're added to the system."
+                  : "No patients match your search criteria. Try adjusting your filters."}
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {filteredPatients.map((patient) => {
+                const config = riskConfig[patient.riskLevel];
+                return (
+                  <button
+                    key={patient.id}
+                    onClick={() => setSelectedPatient(patient)}
+                    className="w-full flex items-center gap-4 p-4 rounded-lg border border-border hover:bg-accent/30 transition-colors text-left"
+                  >
+                    <div className={cn('flex h-11 w-11 items-center justify-center rounded-full', config.bgClass)}>
+                      <User className={cn('h-5 w-5', config.textClass)} />
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      {patient.patientId} • {patient.department} • {patient.age} years
-                    </p>
-                    {patient.flags.length > 0 && (
-                      <p className="text-sm text-foreground/80 mt-1 flex items-center gap-1">
-                        <AlertTriangle className="h-3.5 w-3.5 text-warning" />
-                        {patient.flags.length} flag{patient.flags.length > 1 ? 's' : ''} requiring attention
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-medium text-foreground">{patient.name}</h4>
+                        <span className={config.className}>{config.label}</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        {patient.patientId} • {patient.department || 'No department'} • {patient.age} years
                       </p>
-                    )}
-                  </div>
-                  <div className="hidden sm:block text-right">
-                    <p className="text-sm text-muted-foreground">Risk Score</p>
-                    <p className={cn('text-lg font-semibold', config.textClass)}>{patient.riskScore}%</p>
-                  </div>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                </button>
-              );
-            })}
-          </div>
+                      {patient.flags.length > 0 && (
+                        <p className="text-sm text-foreground/80 mt-1 flex items-center gap-1">
+                          <AlertTriangle className="h-3.5 w-3.5 text-warning" />
+                          {patient.flags.length} flag{patient.flags.length > 1 ? 's' : ''} requiring attention
+                        </p>
+                      )}
+                    </div>
+                    <div className="hidden sm:block text-right">
+                      <p className="text-sm text-muted-foreground">Risk Score</p>
+                      <p className={cn('text-lg font-semibold', config.textClass)}>{patient.riskScore}%</p>
+                    </div>
+                    <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
 
@@ -163,7 +221,7 @@ export default function PatientsPage() {
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Department</p>
-                    <p className="font-medium">{selectedPatient.department}</p>
+                    <p className="font-medium">{selectedPatient.department || 'Not assigned'}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Age / Gender</p>
@@ -181,11 +239,15 @@ export default function PatientsPage() {
                 <div>
                   <p className="text-sm font-medium text-foreground mb-2">Conditions</p>
                   <div className="flex flex-wrap gap-2">
-                    {selectedPatient.conditions.map((condition, i) => (
-                      <span key={i} className="px-2.5 py-1 bg-muted rounded-full text-sm text-muted-foreground">
-                        {condition}
-                      </span>
-                    ))}
+                    {selectedPatient.conditions.length > 0 ? (
+                      selectedPatient.conditions.map((condition, i) => (
+                        <span key={i} className="px-2.5 py-1 bg-muted rounded-full text-sm text-muted-foreground">
+                          {condition}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-sm text-muted-foreground">No conditions recorded</span>
+                    )}
                   </div>
                 </div>
 
