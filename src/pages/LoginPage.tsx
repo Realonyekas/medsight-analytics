@@ -102,13 +102,16 @@ export default function LoginPage() {
       {/* Right Panel - Login Form */}
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md space-y-8">
-          {/* Mobile Logo */}
-          <div className="lg:hidden flex justify-center mb-8">
+          {/* Mobile Logo & Tagline */}
+          <div className="lg:hidden flex flex-col items-center mb-8">
             <img 
               src={medsightLogo} 
               alt="MedSight Analytics" 
               className="h-14 w-auto object-contain"
             />
+            <p className="text-xs font-medium tracking-widest text-primary/70 mt-2">
+              SMARTER INSIGHTS. BETTER CARE.
+            </p>
           </div>
 
           <div className="text-center lg:text-left">
