@@ -43,11 +43,11 @@ export function Sidebar() {
   return (
     <aside className="flex h-screen w-64 flex-col bg-sidebar border-r border-sidebar-border">
       {/* Logo */}
-      <div className="flex h-16 items-center px-4 border-b border-sidebar-border">
+      <div className="flex h-20 items-center px-4 border-b border-sidebar-border">
         <img 
           src={medsightLogo} 
           alt="MedSight Analytics" 
-          className="h-10 w-auto object-contain"
+          className="h-14 w-auto object-contain"
         />
       </div>
 

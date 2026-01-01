@@ -29,7 +29,7 @@ export function Header({ title, subtitle }: HeaderProps) {
     <header className="h-16 border-b border-border bg-card px-6 flex items-center justify-between">
       <div>
         <h1 className="text-xl font-semibold text-foreground">{title}</h1>
-        {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
+        <p className="text-xs font-medium tracking-widest text-primary/70">SMARTER INSIGHTS. BETTER CARE.</p>
       </div>
 
       <div className="flex items-center gap-3">
