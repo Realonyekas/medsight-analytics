@@ -14,16 +14,425 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      departments: {
+        Row: {
+          created_at: string
+          description: string | null
+          hospital_id: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          hospital_id: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          hospital_id?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "departments_hospital_id_fkey"
+            columns: ["hospital_id"]
+            isOneToOne: false
+            referencedRelation: "hospitals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hospitals: {
+        Row: {
+          address: string | null
+          city: string | null
+          created_at: string
+          email: string | null
+          id: string
+          logo_url: string | null
+          name: string
+          phone: string | null
+          state: string | null
+          updated_at: string
+          zip_code: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          logo_url?: string | null
+          name: string
+          phone?: string | null
+          state?: string | null
+          updated_at?: string
+          zip_code?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          logo_url?: string | null
+          name?: string
+          phone?: string | null
+          state?: string | null
+          updated_at?: string
+          zip_code?: string | null
+        }
+        Relationships: []
+      }
+      insights: {
+        Row: {
+          action_label: string | null
+          category: Database["public"]["Enums"]["insight_category"]
+          created_at: string
+          description: string
+          hospital_id: string
+          id: string
+          is_actionable: boolean | null
+          is_read: boolean | null
+          metadata: Json | null
+          patient_id: string | null
+          priority: string | null
+          title: string
+          type: Database["public"]["Enums"]["insight_type"]
+          updated_at: string
+        }
+        Insert: {
+          action_label?: string | null
+          category: Database["public"]["Enums"]["insight_category"]
+          created_at?: string
+          description: string
+          hospital_id: string
+          id?: string
+          is_actionable?: boolean | null
+          is_read?: boolean | null
+          metadata?: Json | null
+          patient_id?: string | null
+          priority?: string | null
+          title: string
+          type: Database["public"]["Enums"]["insight_type"]
+          updated_at?: string
+        }
+        Update: {
+          action_label?: string | null
+          category?: Database["public"]["Enums"]["insight_category"]
+          created_at?: string
+          description?: string
+          hospital_id?: string
+          id?: string
+          is_actionable?: boolean | null
+          is_read?: boolean | null
+          metadata?: Json | null
+          patient_id?: string | null
+          priority?: string | null
+          title?: string
+          type?: Database["public"]["Enums"]["insight_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insights_hospital_id_fkey"
+            columns: ["hospital_id"]
+            isOneToOne: false
+            referencedRelation: "hospitals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insights_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      metrics: {
+        Row: {
+          category: string | null
+          created_at: string
+          hospital_id: string
+          id: string
+          name: string
+          recorded_at: string
+          trend: number | null
+          trend_direction: string | null
+          unit: string | null
+          value: number
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          hospital_id: string
+          id?: string
+          name: string
+          recorded_at?: string
+          trend?: number | null
+          trend_direction?: string | null
+          unit?: string | null
+          value: number
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          hospital_id?: string
+          id?: string
+          name?: string
+          recorded_at?: string
+          trend?: number | null
+          trend_direction?: string | null
+          unit?: string | null
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "metrics_hospital_id_fkey"
+            columns: ["hospital_id"]
+            isOneToOne: false
+            referencedRelation: "hospitals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patients: {
+        Row: {
+          admission_date: string | null
+          ai_flags: Json | null
+          conditions: Json | null
+          created_at: string
+          date_of_birth: string | null
+          department_id: string | null
+          discharge_date: string | null
+          first_name: string
+          gender: string | null
+          hospital_id: string
+          id: string
+          last_name: string
+          los_prediction: number | null
+          mrn: string
+          primary_diagnosis: string | null
+          readmission_risk: number | null
+          risk_level: Database["public"]["Enums"]["risk_level"] | null
+          risk_score: number | null
+          updated_at: string
+        }
+        Insert: {
+          admission_date?: string | null
+          ai_flags?: Json | null
+          conditions?: Json | null
+          created_at?: string
+          date_of_birth?: string | null
+          department_id?: string | null
+          discharge_date?: string | null
+          first_name: string
+          gender?: string | null
+          hospital_id: string
+          id?: string
+          last_name: string
+          los_prediction?: number | null
+          mrn: string
+          primary_diagnosis?: string | null
+          readmission_risk?: number | null
+          risk_level?: Database["public"]["Enums"]["risk_level"] | null
+          risk_score?: number | null
+          updated_at?: string
+        }
+        Update: {
+          admission_date?: string | null
+          ai_flags?: Json | null
+          conditions?: Json | null
+          created_at?: string
+          date_of_birth?: string | null
+          department_id?: string | null
+          discharge_date?: string | null
+          first_name?: string
+          gender?: string | null
+          hospital_id?: string
+          id?: string
+          last_name?: string
+          los_prediction?: number | null
+          mrn?: string
+          primary_diagnosis?: string | null
+          readmission_risk?: number | null
+          risk_level?: Database["public"]["Enums"]["risk_level"] | null
+          risk_score?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patients_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patients_hospital_id_fkey"
+            columns: ["hospital_id"]
+            isOneToOne: false
+            referencedRelation: "hospitals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          department_id: string | null
+          email: string
+          full_name: string | null
+          hospital_id: string | null
+          id: string
+          is_active: boolean
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          department_id?: string | null
+          email: string
+          full_name?: string | null
+          hospital_id?: string | null
+          id: string
+          is_active?: boolean
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          department_id?: string | null
+          email?: string
+          full_name?: string | null
+          hospital_id?: string | null
+          id?: string
+          is_active?: boolean
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_hospital_id_fkey"
+            columns: ["hospital_id"]
+            isOneToOne: false
+            referencedRelation: "hospitals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscriptions: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          features: Json | null
+          hospital_id: string
+          id: string
+          is_active: boolean
+          max_patients: number
+          max_users: number
+          plan: Database["public"]["Enums"]["subscription_plan"]
+          price_monthly: number
+          started_at: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          features?: Json | null
+          hospital_id: string
+          id?: string
+          is_active?: boolean
+          max_patients?: number
+          max_users?: number
+          plan?: Database["public"]["Enums"]["subscription_plan"]
+          price_monthly?: number
+          started_at?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          features?: Json | null
+          hospital_id?: string
+          id?: string
+          is_active?: boolean
+          max_patients?: number
+          max_users?: number
+          plan?: Database["public"]["Enums"]["subscription_plan"]
+          price_monthly?: number
+          started_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_hospital_id_fkey"
+            columns: ["hospital_id"]
+            isOneToOne: false
+            referencedRelation: "hospitals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_hospital_id: { Args: { _user_id: string }; Returns: string }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "hospital_admin" | "clinician" | "operations"
+      insight_category: "clinical" | "operational" | "financial" | "quality"
+      insight_type: "alert" | "trend" | "recommendation" | "prediction"
+      risk_level: "low" | "medium" | "high" | "critical"
+      subscription_plan: "starter" | "growth" | "enterprise"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +559,12 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["hospital_admin", "clinician", "operations"],
+      insight_category: ["clinical", "operational", "financial", "quality"],
+      insight_type: ["alert", "trend", "recommendation", "prediction"],
+      risk_level: ["low", "medium", "high", "critical"],
+      subscription_plan: ["starter", "growth", "enterprise"],
+    },
   },
 } as const
