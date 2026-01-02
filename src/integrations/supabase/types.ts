@@ -426,6 +426,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      user_needs_onboarding: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "hospital_admin" | "clinician" | "operations"
