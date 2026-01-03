@@ -1,1 +1,4 @@
 project_id = "fvxsitupmveszcrbitgt"
+
+[functions.link-demo-hospital]
+verify_jwt = false
