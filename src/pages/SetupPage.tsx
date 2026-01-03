@@ -60,11 +60,14 @@ const STEPS = [
   { id: 'review', title: 'Review & Finish', icon: Check },
 ];
 
+const DEMO_HOSPITAL_ID = 'a0000000-0000-0000-0000-000000000001';
+
 export default function SetupPage() {
   const navigate = useNavigate();
   const { session, profile, isLoading } = useAuth();
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isJoiningDemo, setIsJoiningDemo] = useState(false);
   
   const [hospitalData, setHospitalData] = useState<HospitalData>({
     name: '',
@@ -95,6 +98,32 @@ export default function SetupPage() {
       navigate('/login');
     }
   }, [isLoading, session, navigate]);
+
+  const handleJoinDemoHospital = async () => {
+    if (!session) {
+      toast.error('You must be logged in');
+      return;
+    }
+
+    setIsJoiningDemo(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('link-demo-hospital');
+      
+      if (error) throw error;
+      
+      if (data?.success) {
+        toast.success('Joined demo hospital successfully!');
+        window.location.href = '/dashboard';
+      } else {
+        throw new Error(data?.error || 'Failed to join demo hospital');
+      }
+    } catch (error: any) {
+      console.error('Join demo error:', error);
+      toast.error(error.message || 'Failed to join demo hospital');
+    } finally {
+      setIsJoiningDemo(false);
+    }
+  };
 
   const handleHospitalChange = (field: keyof HospitalData, value: string) => {
     setHospitalData(prev => ({ ...prev, [field]: value }));
@@ -253,6 +282,28 @@ export default function SetupPage() {
       </header>
 
       <div className="container mx-auto px-4 py-8 max-w-4xl">
+        {/* Demo Hospital Quick Join */}
+        <Card className="mb-6 border-dashed border-primary/50 bg-primary/5">
+          <CardContent className="py-4">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <h3 className="font-semibold text-foreground">Want to explore the demo?</h3>
+                <p className="text-sm text-muted-foreground">
+                  Join our demo hospital with sample data to see MedSight in action.
+                </p>
+              </div>
+              <Button
+                onClick={handleJoinDemoHospital}
+                disabled={isJoiningDemo}
+                variant="outline"
+                className="whitespace-nowrap"
+              >
+                {isJoiningDemo ? 'Joining...' : 'Join Demo Hospital'}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Progress Steps */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
