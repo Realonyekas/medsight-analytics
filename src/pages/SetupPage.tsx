@@ -60,7 +60,7 @@ const STEPS = [
   { id: 'review', title: 'Review & Finish', icon: Check },
 ];
 
-const DEMO_HOSPITAL_ID = 'a0000000-0000-0000-0000-000000000001';
+const DEMO_HOSPITAL_ID = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
 
 export default function SetupPage() {
   const navigate = useNavigate();
