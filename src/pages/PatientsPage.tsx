@@ -1,26 +1,20 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, Filter, AlertTriangle, ChevronRight, User, UserPlus } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePatients } from '@/hooks/useHospitalData';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import type { Patient } from '@/types';
 
 export default function PatientsPage() {
+  const navigate = useNavigate();
   const { hospital } = useAuth();
   const { data: dbPatients, isLoading } = usePatients(hospital?.id);
   
   const [searchQuery, setSearchQuery] = useState('');
   const [riskFilter, setRiskFilter] = useState<'all' | 'high' | 'medium' | 'low'>('all');
-  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
 
   // Transform database patients to UI format
   const patients: Patient[] = dbPatients?.map(p => ({
@@ -156,7 +150,7 @@ export default function PatientsPage() {
                 return (
                   <button
                     key={patient.id}
-                    onClick={() => setSelectedPatient(patient)}
+                    onClick={() => navigate(`/patients/${patient.id}`)}
                     className="w-full flex items-center gap-4 p-4 rounded-lg border border-border hover:bg-accent/30 transition-colors text-left"
                   >
                     <div className={cn('flex h-11 w-11 items-center justify-center rounded-full', config.bgClass)}>
@@ -189,113 +183,6 @@ export default function PatientsPage() {
           )}
         </div>
       </div>
-
-      {/* Patient Detail Modal */}
-      <Dialog open={!!selectedPatient} onOpenChange={() => setSelectedPatient(null)}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          {selectedPatient && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="flex items-center gap-3">
-                  <div className={cn(
-                    'flex h-10 w-10 items-center justify-center rounded-full',
-                    riskConfig[selectedPatient.riskLevel].bgClass
-                  )}>
-                    <User className={cn('h-5 w-5', riskConfig[selectedPatient.riskLevel].textClass)} />
-                  </div>
-                  <div>
-                    <span className="text-xl">{selectedPatient.name}</span>
-                    <span className={cn('ml-3', riskConfig[selectedPatient.riskLevel].className)}>
-                      {riskConfig[selectedPatient.riskLevel].label}
-                    </span>
-                  </div>
-                </DialogTitle>
-              </DialogHeader>
-
-              <div className="space-y-6 pt-4">
-                {/* Patient Info */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Patient ID</p>
-                    <p className="font-medium">{selectedPatient.patientId}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Department</p>
-                    <p className="font-medium">{selectedPatient.department || 'Not assigned'}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Age / Gender</p>
-                    <p className="font-medium">{selectedPatient.age} years / {selectedPatient.gender}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Risk Score</p>
-                    <p className={cn('font-semibold text-lg', riskConfig[selectedPatient.riskLevel].textClass)}>
-                      {selectedPatient.riskScore}%
-                    </p>
-                  </div>
-                </div>
-
-                {/* Conditions */}
-                <div>
-                  <p className="text-sm font-medium text-foreground mb-2">Conditions</p>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedPatient.conditions.length > 0 ? (
-                      selectedPatient.conditions.map((condition, i) => (
-                        <span key={i} className="px-2.5 py-1 bg-muted rounded-full text-sm text-muted-foreground">
-                          {condition}
-                        </span>
-                      ))
-                    ) : (
-                      <span className="text-sm text-muted-foreground">No conditions recorded</span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Flags */}
-                {selectedPatient.flags.length > 0 && (
-                  <div>
-                    <p className="text-sm font-medium text-foreground mb-3">AI-Generated Flags</p>
-                    <div className="space-y-3">
-                      {selectedPatient.flags.map((flag) => (
-                        <div key={flag.id} className="p-4 rounded-lg border border-border bg-accent/30">
-                          <div className="flex items-center gap-2 mb-2">
-                            <AlertTriangle className={cn(
-                              'h-4 w-4',
-                              flag.severity === 'high' && 'text-risk-high',
-                              flag.severity === 'medium' && 'text-risk-medium',
-                              flag.severity === 'low' && 'text-risk-low'
-                            )} />
-                            <h5 className="font-medium text-foreground">{flag.title}</h5>
-                            <span className={riskConfig[flag.severity].className}>{flag.severity}</span>
-                          </div>
-                          <p className="text-sm text-muted-foreground mb-3">{flag.description}</p>
-                          <div className="p-3 bg-background rounded-lg border border-border">
-                            <p className="text-xs font-medium text-accent-foreground mb-1">Recommended Action</p>
-                            <p className="text-sm text-foreground">{flag.recommendation}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Disclaimer */}
-                <div className="p-3 bg-muted rounded-lg">
-                  <p className="text-xs text-muted-foreground">
-                    <strong>Note:</strong> These insights are AI-generated for decision support only. 
-                    All clinical decisions should be made by qualified healthcare professionals.
-                  </p>
-                </div>
-
-                <div className="flex justify-end gap-2">
-                  <Button variant="outline" onClick={() => setSelectedPatient(null)}>Close</Button>
-                  <Button>Schedule Follow-up</Button>
-                </div>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
