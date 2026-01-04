@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Shield, Building2, CreditCard, Check, Loader2 } from 'lucide-react';
+import { Shield, Building2, CreditCard, Check, Loader2, Receipt } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription, useDepartments } from '@/hooks/useHospitalData';
@@ -8,6 +8,8 @@ import { usePaystack } from '@/hooks/usePaystack';
 import { subscriptionPlans } from '@/data/mockData';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { PaymentHistory } from '@/components/settings/PaymentHistory';
+import { SubscriptionExpiryAlert } from '@/components/settings/SubscriptionExpiryAlert';
 import { cn } from '@/lib/utils';
 
 export default function SettingsPage() {
@@ -16,6 +18,7 @@ export default function SettingsPage() {
   const { data: departments, isLoading: deptLoading } = useDepartments(hospital?.id);
   const { initializePayment, verifyPayment, isLoading: paymentLoading } = usePaystack();
   const [searchParams, setSearchParams] = useSearchParams();
+  const subscriptionRef = useRef<HTMLDivElement>(null);
 
   const isLoading = subLoading || deptLoading;
 
@@ -27,7 +30,6 @@ export default function SettingsPage() {
     if (paymentCallback === 'callback' && reference) {
       verifyPayment(reference).then(() => {
         refetch();
-        // Clear the URL params
         setSearchParams({});
       });
     }
@@ -39,12 +41,14 @@ export default function SettingsPage() {
     const result = await initializePayment(user.email, price, planTier, hospital.id);
     
     if (result?.authorization_url) {
-      // Redirect to Paystack checkout
       window.location.href = result.authorization_url;
     }
   };
 
-  // Format price to Naira
+  const scrollToPlans = () => {
+    subscriptionRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   const formatNairaPrice = (usdPrice: number) => {
     const ngnRate = 1500;
     const ngnPrice = usdPrice * ngnRate;
@@ -61,6 +65,15 @@ export default function SettingsPage() {
       <Header title="Settings" subtitle="Manage your hospital account and subscription" />
 
       <div className="p-6 space-y-6">
+        {/* Subscription Expiry Alert */}
+        {subscription && (
+          <SubscriptionExpiryAlert 
+            expiresAt={subscription.expires_at} 
+            isActive={subscription.is_active}
+            onRenew={scrollToPlans}
+          />
+        )}
+
         {/* Hospital Info */}
         <section className="card-healthcare">
           <div className="flex items-center gap-3 mb-4">
@@ -98,8 +111,8 @@ export default function SettingsPage() {
           )}
         </section>
 
-        {/* Subscription */}
-        <section className="card-healthcare">
+        {/* Subscription Plans */}
+        <section ref={subscriptionRef} className="card-healthcare">
           <div className="flex items-center gap-3 mb-4">
             <CreditCard className="h-5 w-5 text-primary" />
             <h2 className="section-title">Subscription Plans</h2>
@@ -154,6 +167,15 @@ export default function SettingsPage() {
               );
             })}
           </div>
+        </section>
+
+        {/* Payment History */}
+        <section className="card-healthcare">
+          <div className="flex items-center gap-3 mb-4">
+            <Receipt className="h-5 w-5 text-primary" />
+            <h2 className="section-title">Payment History</h2>
+          </div>
+          <PaymentHistory hospitalId={hospital?.id} />
         </section>
 
         {/* Payment Methods Info */}
