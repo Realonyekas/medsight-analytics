@@ -26,7 +26,11 @@ const adminNavigation = [
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  onNavigate?: () => void;
+}
+
+export function Sidebar({ onNavigate }: SidebarProps) {
   const { user, hospital, logout } = useAuth();
   const location = useLocation();
 
@@ -40,8 +44,12 @@ export function Sidebar() {
     operations: 'Operations',
   };
 
+  const handleNavClick = () => {
+    onNavigate?.();
+  };
+
   return (
-    <aside className="flex h-screen w-64 flex-col bg-sidebar border-r border-sidebar-border shadow-sm">
+    <aside className="flex h-full w-64 flex-col bg-sidebar border-r border-sidebar-border shadow-sm">
       {/* Logo */}
       <div className="flex h-20 items-center px-5 border-b border-sidebar-border/50">
         <img 
@@ -54,7 +62,7 @@ export function Sidebar() {
       {/* Hospital Info */}
       <div className="px-4 py-4 border-b border-sidebar-border/50">
         <div className="flex items-center gap-2.5 px-2 py-2 rounded-lg bg-sidebar-accent/30">
-          <Building2 className="h-4 w-4 text-sidebar-foreground/70" />
+          <Building2 className="h-4 w-4 text-sidebar-foreground/70 flex-shrink-0" />
           <span className="text-sm font-medium text-sidebar-foreground/90 truncate">
             {hospital?.name || 'Hospital'}
           </span>
@@ -71,6 +79,7 @@ export function Sidebar() {
               <Link
                 key={item.name}
                 to={item.href}
+                onClick={handleNavClick}
                 className={cn(
                   'nav-item group',
                   isActive ? 'nav-item-active' : 'nav-item-inactive'
@@ -92,6 +101,7 @@ export function Sidebar() {
                 <Link
                   key={item.name}
                   to={item.href}
+                  onClick={handleNavClick}
                   className={cn(
                     'nav-item group',
                     isActive ? 'nav-item-active' : 'nav-item-inactive'
@@ -109,7 +119,7 @@ export function Sidebar() {
       {/* User Profile */}
       <div className="border-t border-sidebar-border/50 p-3">
         <div className="flex items-center gap-3 px-2 py-2.5 rounded-lg hover:bg-sidebar-accent/30 transition-colors">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/70 text-primary-foreground text-sm font-semibold shadow-sm">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/70 text-primary-foreground text-sm font-semibold shadow-sm flex-shrink-0">
             {user?.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
           </div>
           <div className="flex-1 min-w-0">
@@ -118,7 +128,7 @@ export function Sidebar() {
           </div>
           <button
             onClick={logout}
-            className="p-2 rounded-lg text-sidebar-foreground/60 hover:text-destructive hover:bg-destructive/10 transition-all duration-150"
+            className="p-2 rounded-lg text-sidebar-foreground/60 hover:text-destructive hover:bg-destructive/10 transition-all duration-150 flex-shrink-0"
             title="Sign out"
           >
             <LogOut className="h-4 w-4" />
@@ -129,7 +139,7 @@ export function Sidebar() {
       {/* Compliance Badge */}
       <div className="px-4 py-3 border-t border-sidebar-border/50 bg-sidebar-accent/20">
         <div className="flex items-center gap-2">
-          <Shield className="h-4 w-4 text-success" />
+          <Shield className="h-4 w-4 text-success flex-shrink-0" />
           <span className="text-xs font-medium text-sidebar-foreground/70">HIPAA-Aligned Security</span>
         </div>
       </div>
