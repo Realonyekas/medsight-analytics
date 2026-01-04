@@ -79,8 +79,12 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-background flex">
       {/* Left Panel - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-sidebar flex-col justify-between p-12">
-        <div>
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-sidebar via-sidebar to-primary/20 flex-col justify-between p-12 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-2xl" />
+        
+        <div className="relative z-10">
           <img 
             src={medsightLogo} 
             alt="MedSight Analytics" 
@@ -88,39 +92,41 @@ export default function LoginPage() {
           />
         </div>
 
-        <div className="space-y-6">
-          <h1 className="text-3xl font-bold text-sidebar-foreground leading-tight tracking-wide">
-            SMARTER INSIGHTS. BETTER CARE.
+        <div className="space-y-8 relative z-10">
+          <h1 className="text-4xl font-bold text-sidebar-foreground leading-tight tracking-tight">
+            Smarter Insights.<br />Better Care.
           </h1>
-          <p className="text-lg text-sidebar-foreground/70 leading-relaxed">
+          <p className="text-lg text-sidebar-foreground/80 leading-relaxed max-w-md">
             Reduce administrative workload, flag high-risk patients early, and identify operational inefficiencies — all in one platform.
           </p>
           <div className="flex flex-wrap gap-3">
-            <span className="px-3 py-1.5 rounded-full bg-sidebar-accent text-sidebar-accent-foreground text-sm">
+            <span className="px-4 py-2 rounded-full bg-sidebar-accent/80 text-sidebar-accent-foreground text-sm font-medium backdrop-blur-sm">
               Risk Prediction
             </span>
-            <span className="px-3 py-1.5 rounded-full bg-sidebar-accent text-sidebar-accent-foreground text-sm">
+            <span className="px-4 py-2 rounded-full bg-sidebar-accent/80 text-sidebar-accent-foreground text-sm font-medium backdrop-blur-sm">
               Operational Analytics
             </span>
-            <span className="px-3 py-1.5 rounded-full bg-sidebar-accent text-sidebar-accent-foreground text-sm">
+            <span className="px-4 py-2 rounded-full bg-sidebar-accent/80 text-sidebar-accent-foreground text-sm font-medium backdrop-blur-sm">
               Cost Optimization
             </span>
           </div>
         </div>
 
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 text-sidebar-foreground/60 text-sm">
-            <Shield className="h-4 w-4" />
-            <span>HIPAA-Aligned Data Security</span>
+        <div className="space-y-4 relative z-10">
+          <div className="flex items-center gap-3 text-sidebar-foreground/70 text-sm">
+            <div className="h-8 w-8 rounded-full bg-success/20 flex items-center justify-center">
+              <Shield className="h-4 w-4 text-success" />
+            </div>
+            <span className="font-medium">HIPAA-Aligned Data Security</span>
           </div>
-          <p className="text-xs text-sidebar-foreground/40">
+          <p className="text-xs text-sidebar-foreground/50 pl-11">
             Your data is encrypted and stored securely. We never share patient information with third parties.
           </p>
         </div>
       </div>
 
       {/* Right Panel - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-8">
+      <div className="flex-1 flex items-center justify-center p-8 bg-gradient-to-b from-background to-accent/20">
         <div className="w-full max-w-md space-y-8">
           {/* Mobile Logo & Tagline */}
           <div className="lg:hidden flex flex-col items-center mb-8">
@@ -129,16 +135,16 @@ export default function LoginPage() {
               alt="MedSight Analytics" 
               className="h-14 w-auto object-contain"
             />
-            <p className="text-xs font-medium tracking-widest text-primary/70 mt-2">
-              SMARTER INSIGHTS. BETTER CARE.
+            <p className="text-[11px] font-semibold tracking-[0.2em] text-primary/70 mt-3 uppercase">
+              Smarter Insights. Better Care.
             </p>
           </div>
 
           <div className="text-center lg:text-left">
-            <h2 className="text-2xl font-bold text-foreground">
+            <h2 className="text-3xl font-bold text-foreground tracking-tight">
               {isSignUp ? 'Create your account' : 'Welcome back'}
             </h2>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-muted-foreground mt-2 text-base">
               {isSignUp 
                 ? 'Sign up to start using MedSight Analytics' 
                 : "Sign in to access your hospital's analytics"}
@@ -149,18 +155,18 @@ export default function LoginPage() {
             {/* Full Name (Sign Up only) */}
             {isSignUp && (
               <div className="space-y-2">
-                <label htmlFor="fullName" className="text-sm font-medium text-foreground">
+                <label htmlFor="fullName" className="text-sm font-semibold text-foreground">
                   Full Name
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <input
                     id="fullName"
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="Dr. John Doe"
-                    className="w-full h-11 pl-10 pr-4 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full h-12 pl-11 pr-4 rounded-xl border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200 hover:border-ring/50"
                     required
                   />
                 </div>
@@ -169,18 +175,18 @@ export default function LoginPage() {
 
             {/* Email */}
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium text-foreground">
+              <label htmlFor="email" className="text-sm font-semibold text-foreground">
                 Email address
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@hospital.ng"
-                  className="w-full h-11 pl-10 pr-4 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full h-12 pl-11 pr-4 rounded-xl border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200 hover:border-ring/50"
                   required
                 />
               </div>
@@ -189,30 +195,30 @@ export default function LoginPage() {
             {/* Password */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <label htmlFor="password" className="text-sm font-medium text-foreground">
+                <label htmlFor="password" className="text-sm font-semibold text-foreground">
                   Password
                 </label>
                 {!isSignUp && (
-                  <button type="button" className="text-sm text-primary hover:text-primary/80">
+                  <button type="button" className="text-sm text-primary hover:text-primary/80 font-medium transition-colors">
                     Forgot password?
                   </button>
                 )}
               </div>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full h-11 pl-10 pr-12 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full h-12 pl-11 pr-12 rounded-xl border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200 hover:border-ring/50"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -220,12 +226,15 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
-                <p className="text-sm text-destructive">{error}</p>
+              <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-xl flex items-start gap-3">
+                <div className="h-5 w-5 rounded-full bg-destructive/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <span className="text-destructive text-xs font-bold">!</span>
+                </div>
+                <p className="text-sm text-destructive font-medium">{error}</p>
               </div>
             )}
 
-            <Button type="submit" className="w-full h-11" disabled={isLoading}>
+            <Button type="submit" className="w-full h-12 text-base font-semibold rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200" disabled={isLoading}>
               {isLoading ? (isSignUp ? 'Creating account...' : 'Signing in...') : (isSignUp ? 'Create Account' : 'Sign In')}
             </Button>
           </form>
@@ -238,7 +247,7 @@ export default function LoginPage() {
                   setIsSignUp(!isSignUp);
                   setError('');
                 }}
-                className="text-primary hover:text-primary/80 font-medium"
+                className="text-primary hover:text-primary/80 font-semibold transition-colors"
               >
                 {isSignUp ? 'Sign in' : 'Sign up'}
               </button>
