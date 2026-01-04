@@ -17,3 +17,6 @@ verify_jwt = true
 
 [functions.send-expiry-reminders]
 verify_jwt = false
+
+[functions.submit-demo-request]
+verify_jwt = false
