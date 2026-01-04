@@ -1,8 +1,10 @@
 import { format } from 'date-fns';
-import { Receipt, CheckCircle2, XCircle, Clock, ExternalLink } from 'lucide-react';
+import { Receipt, CheckCircle2, XCircle, Clock, Download, Loader2 } from 'lucide-react';
 import { usePaymentHistory } from '@/hooks/usePaymentHistory';
+import { useInvoice } from '@/hooks/useInvoice';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 interface PaymentHistoryProps {
@@ -11,6 +13,7 @@ interface PaymentHistoryProps {
 
 export function PaymentHistory({ hospitalId }: PaymentHistoryProps) {
   const { data: payments, isLoading } = usePaymentHistory(hospitalId);
+  const { downloadInvoice, isGenerating } = useInvoice();
 
   const formatNaira = (amount: number) => {
     return new Intl.NumberFormat('en-NG', {
@@ -61,6 +64,7 @@ export function PaymentHistory({ hospitalId }: PaymentHistoryProps) {
       {payments.map((payment) => {
         const status = getStatusConfig(payment.status);
         const StatusIcon = status.icon;
+        const isCurrentlyGenerating = isGenerating === payment.id;
 
         return (
           <div
@@ -83,12 +87,29 @@ export function PaymentHistory({ hospitalId }: PaymentHistoryProps) {
                 </p>
               </div>
             </div>
-            <div className="text-right">
-              <p className="font-semibold">{formatNaira(payment.amount)}</p>
-              {payment.payment_reference && (
-                <p className="text-xs text-muted-foreground font-mono">
-                  {payment.payment_reference.slice(0, 15)}...
-                </p>
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <p className="font-semibold">{formatNaira(payment.amount)}</p>
+                {payment.payment_reference && (
+                  <p className="text-xs text-muted-foreground font-mono">
+                    {payment.payment_reference.slice(0, 15)}...
+                  </p>
+                )}
+              </div>
+              {payment.status === 'success' && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => downloadInvoice(payment.id)}
+                  disabled={isCurrentlyGenerating}
+                  title="Download Invoice"
+                >
+                  {isCurrentlyGenerating ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Download className="h-4 w-4" />
+                  )}
+                </Button>
               )}
             </div>
           </div>
