@@ -1,9 +1,45 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Shield, Activity, TrendingDown, Zap, CheckCircle, ArrowRight } from 'lucide-react';
+import { Shield, Activity, TrendingDown, Zap, CheckCircle, ArrowRight, Send, Building2, User, Mail, Phone, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from 'sonner';
 import medsightLogo from '@/assets/medsight-logo.jpg';
 
 const Index = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    hospital: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.name.trim() || !formData.email.trim() || !formData.hospital.trim()) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    setIsSubmitting(true);
+    
+    // Simulate form submission
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    toast.success('Thank you! Our team will contact you within 24 hours.');
+    setFormData({ name: '', email: '', phone: '', hospital: '', message: '' });
+    setIsSubmitting(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
@@ -241,7 +277,169 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Demo Request Section */}
+      <section id="demo" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-accent/30 to-background">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
+            <div>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+                <Building2 className="h-4 w-4" />
+                Enterprise & Custom Solutions
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight mb-4">
+                Request a Demo
+              </h2>
+              <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+                Ready to see MedSight Analytics in action? Our team will walk you through the platform, answer your questions, and help you understand how we can support your hospital's unique needs.
+              </p>
+              
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-medium text-foreground">Personalized walkthrough</p>
+                    <p className="text-sm text-muted-foreground">See features tailored to your hospital size and specialty</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-medium text-foreground">Integration assessment</p>
+                    <p className="text-sm text-muted-foreground">We'll review compatibility with your current systems</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-medium text-foreground">Custom pricing options</p>
+                    <p className="text-sm text-muted-foreground">Enterprise plans starting at ₦1.2M/month with dedicated support</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="card-healthcare p-6 sm:p-8">
+              <h3 className="text-xl font-semibold text-foreground mb-6">Talk to Our Team</h3>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="name" className="text-sm font-medium text-foreground mb-1.5 block">
+                      Full Name <span className="text-destructive">*</span>
+                    </label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="name"
+                        name="name"
+                        type="text"
+                        placeholder="Dr. Amara Obi"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        className="pl-10"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="email" className="text-sm font-medium text-foreground mb-1.5 block">
+                      Work Email <span className="text-destructive">*</span>
+                    </label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="amara@hospital.ng"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="pl-10"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="phone" className="text-sm font-medium text-foreground mb-1.5 block">
+                      Phone Number
+                    </label>
+                    <div className="relative">
+                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        placeholder="+234 801 234 5678"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        className="pl-10"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="hospital" className="text-sm font-medium text-foreground mb-1.5 block">
+                      Hospital/Clinic <span className="text-destructive">*</span>
+                    </label>
+                    <div className="relative">
+                      <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="hospital"
+                        name="hospital"
+                        type="text"
+                        placeholder="Lagos General Hospital"
+                        value={formData.hospital}
+                        onChange={handleInputChange}
+                        className="pl-10"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <label htmlFor="message" className="text-sm font-medium text-foreground mb-1.5 block">
+                    How can we help?
+                  </label>
+                  <div className="relative">
+                    <MessageSquare className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Textarea
+                      id="message"
+                      name="message"
+                      placeholder="Tell us about your hospital's needs, current challenges, or questions..."
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      className="pl-10 min-h-[100px] resize-none"
+                    />
+                  </div>
+                </div>
+                
+                <Button 
+                  type="submit" 
+                  className="w-full h-12 text-base font-semibold shadow-lg shadow-primary/20"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    'Sending...'
+                  ) : (
+                    <>
+                      Request Demo
+                      <Send className="ml-2 h-4 w-4" />
+                    </>
+                  )}
+                </Button>
+                
+                <p className="text-xs text-muted-foreground text-center">
+                  We'll respond within 24 hours. Your data is protected by our HIPAA-aligned security practices.
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/10 via-background to-success/5">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight mb-4">
