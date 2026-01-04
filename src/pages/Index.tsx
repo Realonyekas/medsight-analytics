@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 import medsightLogo from '@/assets/medsight-logo.jpg';
 
 const Index = () => {
@@ -32,12 +33,21 @@ const Index = () => {
 
     setIsSubmitting(true);
     
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast.success('Thank you! Our team will contact you within 24 hours.');
-    setFormData({ name: '', email: '', phone: '', hospital: '', message: '' });
-    setIsSubmitting(false);
+    try {
+      const { data, error } = await supabase.functions.invoke('submit-demo-request', {
+        body: formData,
+      });
+
+      if (error) throw error;
+
+      toast.success('Thank you! Our team will contact you within 24 hours.');
+      setFormData({ name: '', email: '', phone: '', hospital: '', message: '' });
+    } catch (error) {
+      console.error('Error submitting demo request:', error);
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
