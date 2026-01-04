@@ -2,3 +2,12 @@ project_id = "fvxsitupmveszcrbitgt"
 
 [functions.link-demo-hospital]
 verify_jwt = true
+
+[functions.paystack-initialize]
+verify_jwt = true
+
+[functions.paystack-verify]
+verify_jwt = true
+
+[functions.paystack-webhook]
+verify_jwt = false
