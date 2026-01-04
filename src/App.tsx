@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
+import Index from "./pages/Index";
 import LoginPage from "./pages/LoginPage";
 import SetupPage from "./pages/SetupPage";
 import DashboardPage from "./pages/DashboardPage";
@@ -49,12 +50,12 @@ function AppRoutes() {
 
   return (
     <Routes>
+      <Route path="/" element={<Index />} />
       <Route path="/login" element={isAuthenticated ? <Navigate to={getAuthRedirect()} replace /> : <LoginPage />} />
       <Route path="/setup" element={
         !isAuthenticated ? <Navigate to="/login" replace /> :
         (profile?.hospital_id ? <Navigate to="/dashboard" replace /> : <SetupPage />)
       } />
-      <Route path="/" element={<Navigate to={isAuthenticated ? getAuthRedirect() : "/login"} replace />} />
       <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/patients" element={<PatientsPage />} />
