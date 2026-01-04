@@ -41,9 +41,9 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="flex h-screen w-64 flex-col bg-sidebar border-r border-sidebar-border">
+    <aside className="flex h-screen w-64 flex-col bg-sidebar border-r border-sidebar-border shadow-sm">
       {/* Logo */}
-      <div className="flex h-20 items-center px-4 border-b border-sidebar-border">
+      <div className="flex h-20 items-center px-5 border-b border-sidebar-border/50">
         <img 
           src={medsightLogo} 
           alt="MedSight Analytics" 
@@ -52,17 +52,18 @@ export function Sidebar() {
       </div>
 
       {/* Hospital Info */}
-      <div className="px-4 py-3 border-b border-sidebar-border">
-        <div className="flex items-center gap-2">
-          <Building2 className="h-4 w-4 text-sidebar-foreground/60" />
-          <span className="text-sm font-medium text-sidebar-foreground/80 truncate">
+      <div className="px-4 py-4 border-b border-sidebar-border/50">
+        <div className="flex items-center gap-2.5 px-2 py-2 rounded-lg bg-sidebar-accent/30">
+          <Building2 className="h-4 w-4 text-sidebar-foreground/70" />
+          <span className="text-sm font-medium text-sidebar-foreground/90 truncate">
             {hospital?.name || 'Hospital'}
           </span>
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto">
+      <nav className="flex-1 space-y-1 px-3 py-5 overflow-y-auto">
+        <p className="px-3 mb-3 text-[11px] font-semibold tracking-wider text-sidebar-foreground/50 uppercase">Menu</p>
         <div className="space-y-1">
           {filteredNavigation.map((item) => {
             const isActive = location.pathname === item.href;
@@ -71,11 +72,11 @@ export function Sidebar() {
                 key={item.name}
                 to={item.href}
                 className={cn(
-                  'nav-item',
+                  'nav-item group',
                   isActive ? 'nav-item-active' : 'nav-item-inactive'
                 )}
               >
-                <item.icon className="h-5 w-5 flex-shrink-0" />
+                <item.icon className={cn("h-5 w-5 flex-shrink-0 transition-transform duration-150 group-hover:scale-110", isActive && "text-primary")} />
                 {item.name}
               </Link>
             );
@@ -83,7 +84,8 @@ export function Sidebar() {
         </div>
 
         {user?.role === 'hospital_admin' && (
-          <div className="pt-4 mt-4 border-t border-sidebar-border space-y-1">
+          <div className="pt-5 mt-5 border-t border-sidebar-border/50 space-y-1">
+            <p className="px-3 mb-3 text-[11px] font-semibold tracking-wider text-sidebar-foreground/50 uppercase">Admin</p>
             {adminNavigation.map((item) => {
               const isActive = location.pathname === item.href;
               return (
@@ -91,11 +93,11 @@ export function Sidebar() {
                   key={item.name}
                   to={item.href}
                   className={cn(
-                    'nav-item',
+                    'nav-item group',
                     isActive ? 'nav-item-active' : 'nav-item-inactive'
                   )}
                 >
-                  <item.icon className="h-5 w-5 flex-shrink-0" />
+                  <item.icon className={cn("h-5 w-5 flex-shrink-0 transition-transform duration-150 group-hover:scale-110", isActive && "text-primary")} />
                   {item.name}
                 </Link>
               );
@@ -105,18 +107,18 @@ export function Sidebar() {
       </nav>
 
       {/* User Profile */}
-      <div className="border-t border-sidebar-border p-3">
-        <div className="flex items-center gap-3 px-2 py-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-sidebar-accent text-sidebar-accent-foreground text-sm font-medium">
+      <div className="border-t border-sidebar-border/50 p-3">
+        <div className="flex items-center gap-3 px-2 py-2.5 rounded-lg hover:bg-sidebar-accent/30 transition-colors">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/70 text-primary-foreground text-sm font-semibold shadow-sm">
             {user?.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-sidebar-foreground truncate">{user?.name}</p>
+            <p className="text-sm font-semibold text-sidebar-foreground truncate">{user?.name}</p>
             <p className="text-xs text-sidebar-foreground/60">{roleLabels[user?.role || 'operations']}</p>
           </div>
           <button
             onClick={logout}
-            className="p-2 rounded-lg text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
+            className="p-2 rounded-lg text-sidebar-foreground/60 hover:text-destructive hover:bg-destructive/10 transition-all duration-150"
             title="Sign out"
           >
             <LogOut className="h-4 w-4" />
@@ -125,10 +127,10 @@ export function Sidebar() {
       </div>
 
       {/* Compliance Badge */}
-      <div className="px-4 py-3 border-t border-sidebar-border bg-sidebar-accent/30">
+      <div className="px-4 py-3 border-t border-sidebar-border/50 bg-sidebar-accent/20">
         <div className="flex items-center gap-2">
-          <Shield className="h-4 w-4 text-sidebar-foreground/60" />
-          <span className="text-xs text-sidebar-foreground/60">HIPAA-Aligned Security</span>
+          <Shield className="h-4 w-4 text-success" />
+          <span className="text-xs font-medium text-sidebar-foreground/70">HIPAA-Aligned Security</span>
         </div>
       </div>
     </aside>

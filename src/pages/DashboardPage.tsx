@@ -106,32 +106,41 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-b from-background to-background/95">
       <Header 
         title="Dashboard" 
         subtitle={`Welcome back, ${user?.name?.split(' ')[0] || 'User'}. Here's your hospital's overview.`} 
       />
 
-      <div className="p-6 space-y-6">
+      <div className="p-6 lg:p-8 space-y-8">
         {/* No Data Message */}
         {!hasRealData && hospital && (
-          <div className="bg-accent/50 border border-accent rounded-lg p-4 mb-4">
-            <p className="text-sm text-accent-foreground">
-              <strong>Getting Started:</strong> Your hospital doesn't have any data yet. The dashboard is showing sample data. 
-              Add patients and insights to see your real analytics.
-            </p>
+          <div className="bg-primary/5 border border-primary/20 rounded-xl p-5 flex items-start gap-4">
+            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <Activity className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-foreground mb-1">Getting Started</h3>
+              <p className="text-sm text-muted-foreground">
+                Your hospital doesn't have any data yet. The dashboard is showing sample data. 
+                Add patients and insights to see your real analytics.
+              </p>
+            </div>
           </div>
         )}
 
         {/* Key Metrics */}
         <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="section-title">
-              {isOperations ? 'Operational Metrics' : 'Key Metrics'}
-            </h2>
-            <span className="text-xs text-muted-foreground">Updated 2 hours ago</span>
+          <div className="flex items-center justify-between mb-5">
+            <div>
+              <h2 className="section-title">
+                {isOperations ? 'Operational Metrics' : 'Key Metrics'}
+              </h2>
+              <p className="section-subtitle mt-0.5">Overview of your hospital performance</p>
+            </div>
+            <span className="text-xs font-medium text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full">Updated 2h ago</span>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {metricsToShow.map((metric, index) => (
               <MetricCard 
                 key={metric.label} 
@@ -144,23 +153,23 @@ export default function DashboardPage() {
 
         {/* High-Risk Patients Alert - Only for Admins and Clinicians */}
         {(isAdmin || isClinician) && highRiskPatients.length > 0 && (
-          <section className="card-healthcare border-l-4 border-l-risk-high">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-destructive/10">
-                  <AlertTriangle className="h-5 w-5 text-destructive" />
+          <section className="card-healthcare border-l-4 border-l-risk-high !p-0 overflow-hidden">
+            <div className="flex items-center justify-between p-5 bg-gradient-to-r from-destructive/5 to-transparent border-b border-border">
+              <div className="flex items-center gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-destructive/10">
+                  <AlertTriangle className="h-6 w-6 text-destructive" />
                 </div>
                 <div>
                   <h2 className="section-title">Patients Requiring Attention</h2>
                   <p className="section-subtitle">{highRiskPatients.length} patients flagged for review</p>
                 </div>
               </div>
-              <Button variant="outline" size="sm" onClick={() => navigate('/patients')} className="gap-1">
+              <Button variant="outline" size="sm" onClick={() => navigate('/patients')} className="gap-2 rounded-lg hover:bg-accent">
                 View All
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
-            <div className="space-y-3">
+            <div className="p-5 space-y-3">
               {highRiskPatients.slice(0, 3).map((patient) => (
                 <RiskAlertCard 
                   key={patient.id} 
@@ -176,14 +185,14 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* AI Insights */}
           <section className="lg:col-span-1">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-5">
               <h2 className="section-title">AI Insights</h2>
-              <Button variant="ghost" size="sm" onClick={() => navigate('/recommendations')} className="gap-1 text-primary">
+              <Button variant="ghost" size="sm" onClick={() => navigate('/recommendations')} className="gap-1.5 text-primary hover:text-primary hover:bg-primary/10 rounded-lg">
                 See all
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-4">
               {(topInsights.length > 0 ? topInsights : mockDashboardMetrics.slice(0, 3).map((_, i) => ({
                 id: `mock-${i}`,
                 type: 'recommendation' as const,
@@ -199,7 +208,7 @@ export default function DashboardPage() {
           </section>
 
           {/* Trend Charts */}
-          <section className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <section className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-5">
             <TrendChart 
               data={mockTrendData} 
               title={isOperations ? "Task Completion Trend" : "High-Risk Patients"}
@@ -218,27 +227,27 @@ export default function DashboardPage() {
         </div>
 
         {/* Quick Actions */}
-        <section className="card-healthcare bg-accent/30">
-          <h2 className="section-title mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <section className="card-healthcare bg-gradient-to-br from-accent/50 to-accent/20">
+          <h2 className="section-title mb-5">Quick Actions</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {(isAdmin || isClinician) && (
-              <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => navigate('/patients')}>
-                <Users className="h-5 w-5" />
-                <span className="text-sm">View Patients</span>
+              <Button variant="outline" className="h-auto py-5 flex-col gap-3 rounded-xl bg-background/80 hover:bg-background hover:shadow-md transition-all duration-200" onClick={() => navigate('/patients')}>
+                <Users className="h-6 w-6 text-primary" />
+                <span className="text-sm font-medium">View Patients</span>
               </Button>
             )}
-            <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => navigate('/analytics')}>
-              <Activity className="h-5 w-5" />
-              <span className="text-sm">Analytics</span>
+            <Button variant="outline" className="h-auto py-5 flex-col gap-3 rounded-xl bg-background/80 hover:bg-background hover:shadow-md transition-all duration-200" onClick={() => navigate('/analytics')}>
+              <Activity className="h-6 w-6 text-primary" />
+              <span className="text-sm font-medium">Analytics</span>
             </Button>
-            <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => navigate('/recommendations')}>
-              <AlertTriangle className="h-5 w-5" />
-              <span className="text-sm">Recommendations</span>
+            <Button variant="outline" className="h-auto py-5 flex-col gap-3 rounded-xl bg-background/80 hover:bg-background hover:shadow-md transition-all duration-200" onClick={() => navigate('/recommendations')}>
+              <AlertTriangle className="h-6 w-6 text-primary" />
+              <span className="text-sm font-medium">Recommendations</span>
             </Button>
             {(isAdmin || isOperations) && (
-              <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => navigate('/reports')}>
-                <DollarSign className="h-5 w-5" />
-                <span className="text-sm">Reports</span>
+              <Button variant="outline" className="h-auto py-5 flex-col gap-3 rounded-xl bg-background/80 hover:bg-background hover:shadow-md transition-all duration-200" onClick={() => navigate('/reports')}>
+                <DollarSign className="h-6 w-6 text-primary" />
+                <span className="text-sm font-medium">Reports</span>
               </Button>
             )}
           </div>

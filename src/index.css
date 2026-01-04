@@ -179,43 +179,56 @@
 
 @layer components {
   .card-healthcare {
-    @apply bg-card rounded-lg border border-border p-5;
+    @apply bg-card rounded-xl border border-border p-6 transition-all duration-200;
     box-shadow: var(--shadow-card);
   }
 
+  .card-healthcare:hover {
+    box-shadow: var(--shadow-md);
+  }
+
   .metric-card {
-    @apply bg-card rounded-lg border border-border p-4;
+    @apply bg-card rounded-xl border border-border p-5 transition-all duration-200;
     box-shadow: var(--shadow-sm);
   }
 
+  .metric-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+
   .risk-badge-high {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold tracking-wide;
     background-color: hsl(var(--risk-high) / 0.12);
     color: hsl(var(--risk-high));
   }
 
   .risk-badge-medium {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold tracking-wide;
     background-color: hsl(var(--risk-medium) / 0.12);
     color: hsl(var(--risk-medium));
   }
 
   .risk-badge-low {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold tracking-wide;
     background-color: hsl(var(--risk-low) / 0.12);
     color: hsl(var(--risk-low));
   }
 
   .insight-card {
-    @apply bg-accent/50 border border-accent rounded-lg p-4;
+    @apply bg-accent/50 border border-accent rounded-xl p-4 transition-all duration-200;
+  }
+
+  .insight-card:hover {
+    @apply bg-accent/70;
   }
 
   .nav-item {
-    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors;
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150;
   }
 
   .nav-item-active {
-    @apply bg-sidebar-accent text-sidebar-accent-foreground;
+    @apply bg-sidebar-accent text-sidebar-accent-foreground shadow-sm;
   }
 
   .nav-item-inactive {
@@ -223,7 +236,7 @@
   }
 
   .section-title {
-    @apply text-lg font-semibold text-foreground;
+    @apply text-lg font-semibold text-foreground tracking-tight;
   }
 
   .section-subtitle {
@@ -231,21 +244,61 @@
   }
 
   .stat-value {
-    @apply text-2xl font-bold text-foreground tracking-tight;
+    @apply text-3xl font-bold text-foreground tracking-tight;
   }
 
   .stat-label {
-    @apply text-sm text-muted-foreground;
+    @apply text-sm font-medium text-muted-foreground;
   }
 
   .stat-change-positive {
-    @apply text-xs font-medium;
+    @apply text-xs font-semibold px-1.5 py-0.5 rounded-md;
     color: hsl(var(--success));
+    background-color: hsl(var(--success) / 0.1);
   }
 
   .stat-change-negative {
-    @apply text-xs font-medium;
+    @apply text-xs font-semibold px-1.5 py-0.5 rounded-md;
     color: hsl(var(--destructive));
+    background-color: hsl(var(--destructive) / 0.1);
+  }
+
+  /* Empty state styling */
+  .empty-state {
+    @apply flex flex-col items-center justify-center py-16 px-6 text-center;
+  }
+
+  .empty-state-icon {
+    @apply h-16 w-16 text-muted-foreground/40 mb-4;
+  }
+
+  .empty-state-title {
+    @apply text-xl font-semibold text-foreground mb-2;
+  }
+
+  .empty-state-description {
+    @apply text-muted-foreground max-w-md;
+  }
+
+  /* Better focus states */
+  input:focus-visible,
+  button:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Smooth skeleton animation */
+  .skeleton-pulse {
+    @apply animate-pulse bg-gradient-to-r from-muted/50 via-muted to-muted/50 bg-[length:200%_100%];
+    animation: shimmer 1.5s infinite linear;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
   }
 }
 
