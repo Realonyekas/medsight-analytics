@@ -16,23 +16,18 @@ export function usePaystack() {
 
   const initializePayment = async (
     email: string,
-    amount: number, // Amount in USD
     plan: string,
     hospitalId: string
   ): Promise<PaystackInitResponse | null> => {
     setIsLoading(true);
     
     try {
-      // Convert USD to NGN (using approximate rate) and then to kobo
-      const ngnRate = 1500; // 1 USD = ~1500 NGN
-      const amountInKobo = Math.round(amount * ngnRate * 100);
-      
       const callbackUrl = `${window.location.origin}/settings?payment=callback`;
 
+      // Server calculates amount based on plan - prevents price manipulation
       const { data, error } = await supabase.functions.invoke('paystack-initialize', {
         body: {
           email,
-          amount: amountInKobo,
           plan,
           hospital_id: hospitalId,
           callback_url: callbackUrl,
