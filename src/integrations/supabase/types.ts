@@ -285,6 +285,56 @@ export type Database = {
           },
         ]
       }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          hospital_id: string
+          id: string
+          metadata: Json | null
+          payment_reference: string | null
+          paystack_reference: string | null
+          plan: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          hospital_id: string
+          id?: string
+          metadata?: Json | null
+          payment_reference?: string | null
+          paystack_reference?: string | null
+          plan?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          hospital_id?: string
+          id?: string
+          metadata?: Json | null
+          payment_reference?: string | null
+          paystack_reference?: string | null
+          plan?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_hospital_id_fkey"
+            columns: ["hospital_id"]
+            isOneToOne: false
+            referencedRelation: "hospitals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
