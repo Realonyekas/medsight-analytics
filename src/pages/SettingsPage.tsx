@@ -35,10 +35,11 @@ export default function SettingsPage() {
     }
   }, [searchParams, verifyPayment, refetch, setSearchParams]);
 
-  const handleUpgrade = async (planTier: string, price: number) => {
+  const handleUpgrade = async (planTier: string) => {
     if (!user?.email || !hospital?.id) return;
 
-    const result = await initializePayment(user.email, price, planTier, hospital.id);
+    // Server calculates price based on plan - prevents price manipulation
+    const result = await initializePayment(user.email, planTier, hospital.id);
     
     if (result?.authorization_url) {
       window.location.href = result.authorization_url;
@@ -150,7 +151,7 @@ export default function SettingsPage() {
                     variant={isCurrentPlan ? "secondary" : "default"} 
                     className="w-full mt-4"
                     disabled={isCurrentPlan || paymentLoading}
-                    onClick={() => !isCurrentPlan && handleUpgrade(plan.tier, plan.price)}
+                    onClick={() => !isCurrentPlan && handleUpgrade(plan.tier)}
                   >
                     {paymentLoading ? (
                       <>

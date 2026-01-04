@@ -8,11 +8,19 @@ const corsHeaders = {
 
 interface InitializePaymentRequest {
   email: string;
-  amount: number; // Amount in kobo (NGN smallest unit)
   plan: string;
   hospital_id: string;
   callback_url: string;
 }
+
+// Server-side pricing - single source of truth
+const PLAN_PRICES_USD: Record<string, number> = {
+  starter: 499,
+  growth: 1200,
+  enterprise: 3000,
+};
+
+const NGN_RATE = 1500; // 1 USD = 1500 NGN
 
 serve(async (req) => {
   // Handle CORS preflight
@@ -47,9 +55,19 @@ serve(async (req) => {
       throw new Error("Unauthorized");
     }
 
-    const { email, amount, plan, hospital_id, callback_url }: InitializePaymentRequest = await req.json();
+    const { email, plan, hospital_id, callback_url }: InitializePaymentRequest = await req.json();
 
-    console.log("Initializing payment:", { email, amount, plan, hospital_id });
+    // Validate plan and calculate amount server-side
+    const priceUsd = PLAN_PRICES_USD[plan];
+    if (!priceUsd) {
+      console.error("Invalid plan:", plan);
+      throw new Error(`Invalid plan: ${plan}. Valid plans are: starter, growth, enterprise`);
+    }
+
+    // Calculate amount in kobo (NGN smallest unit)
+    const amount = Math.round(priceUsd * NGN_RATE * 100);
+
+    console.log("Initializing payment:", { email, plan, priceUsd, amount, hospital_id });
 
     // Generate unique reference
     const reference = `MS_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
