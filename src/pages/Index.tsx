@@ -8,6 +8,8 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import medsightLogo from '@/assets/medsight-logo.jpg';
 
+type TourTab = 'patients' | 'analytics' | 'alerts';
+
 const Index = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -17,6 +19,7 @@ const Index = () => {
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeTourTab, setActiveTourTab] = useState<TourTab>('patients');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -244,131 +247,287 @@ const Index = () => {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
               <Play className="h-4 w-4" />
-              See It In Action
+              Interactive Tour
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight mb-4">
               Experience the Platform
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Watch how MedSight Analytics transforms raw hospital data into clear, actionable insights—without requiring any technical expertise from your team.
+              Explore how MedSight Analytics transforms raw hospital data into clear, actionable insights—click the tabs below to see different views.
             </p>
           </div>
           
-          {/* Video Player Container */}
+          {/* Interactive Dashboard Container */}
           <div className="max-w-4xl mx-auto">
+            {/* Tab Navigation */}
+            <div className="flex justify-center mb-6">
+              <div className="inline-flex bg-muted/50 rounded-xl p-1.5 gap-1">
+                <button
+                  onClick={() => setActiveTourTab('patients')}
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                    activeTourTab === 'patients'
+                      ? 'bg-background text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
+                  }`}
+                >
+                  <Users className="h-4 w-4" />
+                  <span className="hidden sm:inline">Patients</span>
+                </button>
+                <button
+                  onClick={() => setActiveTourTab('analytics')}
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                    activeTourTab === 'analytics'
+                      ? 'bg-background text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
+                  }`}
+                >
+                  <BarChart3 className="h-4 w-4" />
+                  <span className="hidden sm:inline">Analytics</span>
+                </button>
+                <button
+                  onClick={() => setActiveTourTab('alerts')}
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                    activeTourTab === 'alerts'
+                      ? 'bg-background text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
+                  }`}
+                >
+                  <Activity className="h-4 w-4" />
+                  <span className="hidden sm:inline">Alerts</span>
+                </button>
+              </div>
+            </div>
+            
             <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-sidebar via-sidebar to-primary/30 shadow-2xl shadow-primary/10">
               {/* Aspect Ratio Container */}
               <div className="aspect-video relative">
                 {/* Mock Dashboard Preview */}
-                <div className="absolute inset-0 p-6 sm:p-8">
+                <div className="absolute inset-0 p-4 sm:p-6">
                   <div className="h-full w-full rounded-xl bg-background/95 backdrop-blur-sm border border-border/50 overflow-hidden flex flex-col">
                     {/* Mock Header */}
                     <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-card/50">
                       <div className="flex items-center gap-3">
                         <div className="h-8 w-8 rounded-lg bg-primary/20 flex items-center justify-center">
-                          <Activity className="h-4 w-4 text-primary" />
+                          {activeTourTab === 'patients' && <Users className="h-4 w-4 text-primary" />}
+                          {activeTourTab === 'analytics' && <BarChart3 className="h-4 w-4 text-primary" />}
+                          {activeTourTab === 'alerts' && <Activity className="h-4 w-4 text-primary" />}
                         </div>
                         <div>
-                          <div className="h-3 w-32 bg-foreground/80 rounded" />
-                          <div className="h-2 w-20 bg-muted-foreground/40 rounded mt-1" />
+                          <div className="text-sm font-semibold text-foreground">
+                            {activeTourTab === 'patients' && 'Patient Management'}
+                            {activeTourTab === 'analytics' && 'Analytics Dashboard'}
+                            {activeTourTab === 'alerts' && 'Risk Alerts'}
+                          </div>
+                          <div className="text-xs text-muted-foreground">Lagos General Hospital</div>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <div className="h-8 w-8 rounded-full bg-success/20" />
-                        <div className="h-8 w-8 rounded-full bg-warning/20" />
+                        <div className="h-8 w-8 rounded-full bg-success/20 flex items-center justify-center">
+                          <div className="h-2 w-2 rounded-full bg-success animate-pulse" />
+                        </div>
                       </div>
                     </div>
                     
-                    {/* Mock Content */}
-                    <div className="flex-1 p-4 grid grid-cols-3 gap-4">
-                      {/* Metric Cards */}
-                      <div className="col-span-3 sm:col-span-1 rounded-lg bg-card border border-border p-3">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Users className="h-4 w-4 text-primary" />
-                          <span className="text-xs font-medium text-muted-foreground">High-Risk Patients</span>
-                        </div>
-                        <div className="text-2xl font-bold text-foreground">23</div>
-                        <div className="text-xs text-destructive flex items-center gap-1 mt-1">
-                          <Activity className="h-3 w-3" /> 5 require attention
-                        </div>
-                      </div>
-                      <div className="col-span-3 sm:col-span-1 rounded-lg bg-card border border-border p-3">
-                        <div className="flex items-center gap-2 mb-2">
-                          <BarChart3 className="h-4 w-4 text-success" />
-                          <span className="text-xs font-medium text-muted-foreground">Avg Length of Stay</span>
-                        </div>
-                        <div className="text-2xl font-bold text-foreground">4.2d</div>
-                        <div className="text-xs text-success flex items-center gap-1 mt-1">
-                          <TrendingDown className="h-3 w-3" /> 12% improved
-                        </div>
-                      </div>
-                      <div className="col-span-3 sm:col-span-1 rounded-lg bg-card border border-border p-3">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Monitor className="h-4 w-4 text-warning" />
-                          <span className="text-xs font-medium text-muted-foreground">Readmission Risk</span>
-                        </div>
-                        <div className="text-2xl font-bold text-foreground">8.4%</div>
-                        <div className="text-xs text-success flex items-center gap-1 mt-1">
-                          <TrendingDown className="h-3 w-3" /> Below target
-                        </div>
-                      </div>
-                      
-                      {/* Chart Area */}
-                      <div className="col-span-3 rounded-lg bg-card border border-border p-3 flex-1 hidden sm:block">
-                        <div className="flex items-center justify-between mb-3">
-                          <span className="text-xs font-medium text-muted-foreground">Patient Risk Trends</span>
+                    {/* Patients View */}
+                    {activeTourTab === 'patients' && (
+                      <div className="flex-1 p-4 overflow-hidden">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="text-xs font-medium text-muted-foreground">Active Patients (247)</div>
                           <div className="flex gap-2">
-                            <div className="h-2 w-2 rounded-full bg-primary" />
-                            <div className="h-2 w-2 rounded-full bg-success" />
-                            <div className="h-2 w-2 rounded-full bg-warning" />
+                            <div className="px-2 py-1 rounded bg-primary/10 text-primary text-xs font-medium">All</div>
+                            <div className="px-2 py-1 rounded bg-muted text-muted-foreground text-xs">High Risk</div>
+                            <div className="px-2 py-1 rounded bg-muted text-muted-foreground text-xs hidden sm:block">ICU</div>
                           </div>
                         </div>
-                        <div className="flex items-end gap-1 h-16">
-                          {[40, 65, 45, 80, 55, 70, 60, 85, 50, 75, 65, 90].map((height, i) => (
-                            <div 
-                              key={i} 
-                              className="flex-1 rounded-t bg-gradient-to-t from-primary/60 to-primary/20"
-                              style={{ height: `${height}%` }}
-                            />
+                        <div className="space-y-2">
+                          {[
+                            { name: 'Adaora Okonkwo', age: 67, risk: 'high', diagnosis: 'Cardiac Arrhythmia', stay: '5 days' },
+                            { name: 'Emeka Nwosu', age: 45, risk: 'medium', diagnosis: 'Post-Op Recovery', stay: '3 days' },
+                            { name: 'Fatima Ibrahim', age: 34, risk: 'low', diagnosis: 'Routine Checkup', stay: '1 day' },
+                            { name: 'Chinedu Eze', age: 52, risk: 'high', diagnosis: 'Diabetic Complications', stay: '7 days' },
+                          ].map((patient, i) => (
+                            <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-card border border-border hover:border-primary/30 transition-colors">
+                              <div className="flex items-center gap-3">
+                                <div className={`h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold ${
+                                  patient.risk === 'high' ? 'bg-destructive/20 text-destructive' :
+                                  patient.risk === 'medium' ? 'bg-warning/20 text-warning' :
+                                  'bg-success/20 text-success'
+                                }`}>
+                                  {patient.name.split(' ').map(n => n[0]).join('')}
+                                </div>
+                                <div>
+                                  <div className="text-sm font-medium text-foreground">{patient.name}</div>
+                                  <div className="text-xs text-muted-foreground">{patient.diagnosis}</div>
+                                </div>
+                              </div>
+                              <div className="text-right hidden sm:block">
+                                <div className={`text-xs font-medium px-2 py-0.5 rounded ${
+                                  patient.risk === 'high' ? 'bg-destructive/10 text-destructive' :
+                                  patient.risk === 'medium' ? 'bg-warning/10 text-warning' :
+                                  'bg-success/10 text-success'
+                                }`}>
+                                  {patient.risk} risk
+                                </div>
+                                <div className="text-xs text-muted-foreground mt-1">{patient.stay}</div>
+                              </div>
+                            </div>
                           ))}
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Play Button Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-[1px] group cursor-pointer hover:bg-black/30 transition-colors">
-                  <div className="h-20 w-20 rounded-full bg-primary/90 flex items-center justify-center shadow-xl shadow-primary/30 group-hover:scale-110 transition-transform">
-                    <Play className="h-8 w-8 text-primary-foreground ml-1" fill="currentColor" />
+                    )}
+                    
+                    {/* Analytics View */}
+                    {activeTourTab === 'analytics' && (
+                      <div className="flex-1 p-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div className="col-span-1 rounded-lg bg-card border border-border p-3">
+                          <div className="text-xs text-muted-foreground mb-1">Bed Occupancy</div>
+                          <div className="text-xl font-bold text-foreground">87%</div>
+                          <div className="text-xs text-success flex items-center gap-1">
+                            <TrendingDown className="h-3 w-3" /> Optimal
+                          </div>
+                        </div>
+                        <div className="col-span-1 rounded-lg bg-card border border-border p-3">
+                          <div className="text-xs text-muted-foreground mb-1">Avg LOS</div>
+                          <div className="text-xl font-bold text-foreground">4.2d</div>
+                          <div className="text-xs text-success flex items-center gap-1">
+                            <TrendingDown className="h-3 w-3" /> -12%
+                          </div>
+                        </div>
+                        <div className="col-span-1 rounded-lg bg-card border border-border p-3">
+                          <div className="text-xs text-muted-foreground mb-1">Readmissions</div>
+                          <div className="text-xl font-bold text-foreground">8.4%</div>
+                          <div className="text-xs text-success flex items-center gap-1">
+                            <TrendingDown className="h-3 w-3" /> -5%
+                          </div>
+                        </div>
+                        <div className="col-span-1 rounded-lg bg-card border border-border p-3">
+                          <div className="text-xs text-muted-foreground mb-1">Cost Saved</div>
+                          <div className="text-xl font-bold text-foreground">₦2.4M</div>
+                          <div className="text-xs text-success flex items-center gap-1">
+                            <Zap className="h-3 w-3" /> This month
+                          </div>
+                        </div>
+                        <div className="col-span-2 sm:col-span-4 rounded-lg bg-card border border-border p-3">
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="text-xs font-medium text-muted-foreground">Weekly Admissions vs Discharges</span>
+                            <div className="flex items-center gap-3 text-xs">
+                              <span className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-primary" /> Admissions</span>
+                              <span className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-success" /> Discharges</span>
+                            </div>
+                          </div>
+                          <div className="flex items-end gap-2 h-20">
+                            {[
+                              { a: 45, d: 42 }, { a: 52, d: 48 }, { a: 38, d: 45 }, { a: 65, d: 55 },
+                              { a: 48, d: 52 }, { a: 72, d: 68 }, { a: 55, d: 58 }
+                            ].map((day, i) => (
+                              <div key={i} className="flex-1 flex gap-0.5">
+                                <div className="flex-1 rounded-t bg-primary/60" style={{ height: `${day.a}%` }} />
+                                <div className="flex-1 rounded-t bg-success/60" style={{ height: `${day.d}%` }} />
+                              </div>
+                            ))}
+                          </div>
+                          <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+                            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Alerts View */}
+                    {activeTourTab === 'alerts' && (
+                      <div className="flex-1 p-4 overflow-hidden">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="text-xs font-medium text-muted-foreground">Active Alerts (12)</div>
+                          <div className="flex gap-2">
+                            <div className="px-2 py-1 rounded bg-destructive/10 text-destructive text-xs font-medium">3 Critical</div>
+                            <div className="px-2 py-1 rounded bg-warning/10 text-warning text-xs font-medium">5 Warning</div>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          {[
+                            { type: 'critical', title: 'Deterioration Risk Detected', patient: 'Adaora Okonkwo', time: '2 min ago', desc: 'Vital signs trending down, SpO2 at 91%' },
+                            { type: 'critical', title: 'High Readmission Risk', patient: 'Chinedu Eze', time: '15 min ago', desc: 'Predicted 78% readmission probability' },
+                            { type: 'warning', title: 'Extended Length of Stay', patient: 'ICU Ward', time: '1 hr ago', desc: '3 patients exceeding predicted LOS' },
+                            { type: 'info', title: 'Discharge Ready', patient: 'Fatima Ibrahim', time: '2 hrs ago', desc: 'All criteria met for safe discharge' },
+                          ].map((alert, i) => (
+                            <div key={i} className={`flex items-start gap-3 p-3 rounded-lg border ${
+                              alert.type === 'critical' ? 'bg-destructive/5 border-destructive/20' :
+                              alert.type === 'warning' ? 'bg-warning/5 border-warning/20' :
+                              'bg-card border-border'
+                            }`}>
+                              <div className={`h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                alert.type === 'critical' ? 'bg-destructive/20' :
+                                alert.type === 'warning' ? 'bg-warning/20' :
+                                'bg-success/20'
+                              }`}>
+                                <Activity className={`h-4 w-4 ${
+                                  alert.type === 'critical' ? 'text-destructive' :
+                                  alert.type === 'warning' ? 'text-warning' :
+                                  'text-success'
+                                }`} />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between gap-2">
+                                  <div className="text-sm font-medium text-foreground truncate">{alert.title}</div>
+                                  <div className="text-xs text-muted-foreground flex-shrink-0">{alert.time}</div>
+                                </div>
+                                <div className="text-xs text-muted-foreground">{alert.patient}</div>
+                                <div className="text-xs text-muted-foreground/70 mt-1 hidden sm:block">{alert.desc}</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
             
-            {/* Tour Features */}
+            {/* Tour Feature Descriptions */}
             <div className="grid sm:grid-cols-3 gap-6 mt-8">
-              <div className="text-center">
-                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
-                  <Monitor className="h-5 w-5 text-primary" />
+              <button
+                onClick={() => setActiveTourTab('patients')}
+                className={`text-center p-4 rounded-xl transition-all ${
+                  activeTourTab === 'patients' ? 'bg-primary/10 ring-2 ring-primary/20' : 'hover:bg-muted/50'
+                }`}
+              >
+                <div className={`h-10 w-10 rounded-full flex items-center justify-center mx-auto mb-3 ${
+                  activeTourTab === 'patients' ? 'bg-primary/20' : 'bg-primary/10'
+                }`}>
+                  <Users className="h-5 w-5 text-primary" />
                 </div>
-                <h3 className="font-semibold text-foreground mb-1">Dashboard Overview</h3>
-                <p className="text-sm text-muted-foreground">See how real-time metrics keep your team informed at a glance.</p>
-              </div>
-              <div className="text-center">
-                <div className="h-10 w-10 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-3">
-                  <Activity className="h-5 w-5 text-destructive" />
-                </div>
-                <h3 className="font-semibold text-foreground mb-1">Risk Alerts</h3>
-                <p className="text-sm text-muted-foreground">Watch AI-powered early warning systems identify at-risk patients.</p>
-              </div>
-              <div className="text-center">
-                <div className="h-10 w-10 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-3">
+                <h3 className="font-semibold text-foreground mb-1">Patient Overview</h3>
+                <p className="text-sm text-muted-foreground">Track every patient with real-time risk scoring and predictive insights.</p>
+              </button>
+              <button
+                onClick={() => setActiveTourTab('analytics')}
+                className={`text-center p-4 rounded-xl transition-all ${
+                  activeTourTab === 'analytics' ? 'bg-success/10 ring-2 ring-success/20' : 'hover:bg-muted/50'
+                }`}
+              >
+                <div className={`h-10 w-10 rounded-full flex items-center justify-center mx-auto mb-3 ${
+                  activeTourTab === 'analytics' ? 'bg-success/20' : 'bg-success/10'
+                }`}>
                   <BarChart3 className="h-5 w-5 text-success" />
                 </div>
-                <h3 className="font-semibold text-foreground mb-1">Actionable Insights</h3>
-                <p className="text-sm text-muted-foreground">Discover how explainable AI drives confident clinical decisions.</p>
-              </div>
+                <h3 className="font-semibold text-foreground mb-1">Operational Analytics</h3>
+                <p className="text-sm text-muted-foreground">Monitor KPIs, track cost savings, and identify optimization opportunities.</p>
+              </button>
+              <button
+                onClick={() => setActiveTourTab('alerts')}
+                className={`text-center p-4 rounded-xl transition-all ${
+                  activeTourTab === 'alerts' ? 'bg-destructive/10 ring-2 ring-destructive/20' : 'hover:bg-muted/50'
+                }`}
+              >
+                <div className={`h-10 w-10 rounded-full flex items-center justify-center mx-auto mb-3 ${
+                  activeTourTab === 'alerts' ? 'bg-destructive/20' : 'bg-destructive/10'
+                }`}>
+                  <Activity className="h-5 w-5 text-destructive" />
+                </div>
+                <h3 className="font-semibold text-foreground mb-1">Smart Alerts</h3>
+                <p className="text-sm text-muted-foreground">AI-powered early warnings for deterioration and readmission risks.</p>
+              </button>
             </div>
           </div>
         </div>
