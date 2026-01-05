@@ -8,7 +8,8 @@ import {
   Settings,
   LogOut,
   Shield,
-  Building2
+  Building2,
+  ClipboardList
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
@@ -23,6 +24,7 @@ const navigation = [
 ];
 
 const adminNavigation = [
+  { name: 'Demo Requests', href: '/demo-requests', icon: ClipboardList },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 

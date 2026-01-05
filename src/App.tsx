@@ -15,6 +15,7 @@ import AnalyticsPage from "./pages/AnalyticsPage";
 import RecommendationsPage from "./pages/RecommendationsPage";
 import ReportsPage from "./pages/ReportsPage";
 import SettingsPage from "./pages/SettingsPage";
+import DemoRequestsPage from "./pages/DemoRequestsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -64,6 +65,7 @@ function AppRoutes() {
         <Route path="/recommendations" element={<RecommendationsPage />} />
         <Route path="/reports" element={<ReportsPage />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/demo-requests" element={<DemoRequestsPage />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
