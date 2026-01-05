@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Shield, Activity, TrendingDown, Zap, CheckCircle, ArrowRight, Send, Building2, User, Mail, Phone, MessageSquare } from 'lucide-react';
+import { Shield, Activity, TrendingDown, Zap, CheckCircle, ArrowRight, Send, Building2, User, Mail, Phone, MessageSquare, Play, Monitor, BarChart3, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -233,6 +233,142 @@ const Index = () => {
               <p className="text-muted-foreground text-sm">
                 Receive clear, prioritized recommendations through dashboards designed for busy clinical environments.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Product Tour Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+              <Play className="h-4 w-4" />
+              See It In Action
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight mb-4">
+              Experience the Platform
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Watch how MedSight Analytics transforms raw hospital data into clear, actionable insights—without requiring any technical expertise from your team.
+            </p>
+          </div>
+          
+          {/* Video Player Container */}
+          <div className="max-w-4xl mx-auto">
+            <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-sidebar via-sidebar to-primary/30 shadow-2xl shadow-primary/10">
+              {/* Aspect Ratio Container */}
+              <div className="aspect-video relative">
+                {/* Mock Dashboard Preview */}
+                <div className="absolute inset-0 p-6 sm:p-8">
+                  <div className="h-full w-full rounded-xl bg-background/95 backdrop-blur-sm border border-border/50 overflow-hidden flex flex-col">
+                    {/* Mock Header */}
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-card/50">
+                      <div className="flex items-center gap-3">
+                        <div className="h-8 w-8 rounded-lg bg-primary/20 flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-primary" />
+                        </div>
+                        <div>
+                          <div className="h-3 w-32 bg-foreground/80 rounded" />
+                          <div className="h-2 w-20 bg-muted-foreground/40 rounded mt-1" />
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="h-8 w-8 rounded-full bg-success/20" />
+                        <div className="h-8 w-8 rounded-full bg-warning/20" />
+                      </div>
+                    </div>
+                    
+                    {/* Mock Content */}
+                    <div className="flex-1 p-4 grid grid-cols-3 gap-4">
+                      {/* Metric Cards */}
+                      <div className="col-span-3 sm:col-span-1 rounded-lg bg-card border border-border p-3">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Users className="h-4 w-4 text-primary" />
+                          <span className="text-xs font-medium text-muted-foreground">High-Risk Patients</span>
+                        </div>
+                        <div className="text-2xl font-bold text-foreground">23</div>
+                        <div className="text-xs text-destructive flex items-center gap-1 mt-1">
+                          <Activity className="h-3 w-3" /> 5 require attention
+                        </div>
+                      </div>
+                      <div className="col-span-3 sm:col-span-1 rounded-lg bg-card border border-border p-3">
+                        <div className="flex items-center gap-2 mb-2">
+                          <BarChart3 className="h-4 w-4 text-success" />
+                          <span className="text-xs font-medium text-muted-foreground">Avg Length of Stay</span>
+                        </div>
+                        <div className="text-2xl font-bold text-foreground">4.2d</div>
+                        <div className="text-xs text-success flex items-center gap-1 mt-1">
+                          <TrendingDown className="h-3 w-3" /> 12% improved
+                        </div>
+                      </div>
+                      <div className="col-span-3 sm:col-span-1 rounded-lg bg-card border border-border p-3">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Monitor className="h-4 w-4 text-warning" />
+                          <span className="text-xs font-medium text-muted-foreground">Readmission Risk</span>
+                        </div>
+                        <div className="text-2xl font-bold text-foreground">8.4%</div>
+                        <div className="text-xs text-success flex items-center gap-1 mt-1">
+                          <TrendingDown className="h-3 w-3" /> Below target
+                        </div>
+                      </div>
+                      
+                      {/* Chart Area */}
+                      <div className="col-span-3 rounded-lg bg-card border border-border p-3 flex-1 hidden sm:block">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-xs font-medium text-muted-foreground">Patient Risk Trends</span>
+                          <div className="flex gap-2">
+                            <div className="h-2 w-2 rounded-full bg-primary" />
+                            <div className="h-2 w-2 rounded-full bg-success" />
+                            <div className="h-2 w-2 rounded-full bg-warning" />
+                          </div>
+                        </div>
+                        <div className="flex items-end gap-1 h-16">
+                          {[40, 65, 45, 80, 55, 70, 60, 85, 50, 75, 65, 90].map((height, i) => (
+                            <div 
+                              key={i} 
+                              className="flex-1 rounded-t bg-gradient-to-t from-primary/60 to-primary/20"
+                              style={{ height: `${height}%` }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Play Button Overlay */}
+                <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-[1px] group cursor-pointer hover:bg-black/30 transition-colors">
+                  <div className="h-20 w-20 rounded-full bg-primary/90 flex items-center justify-center shadow-xl shadow-primary/30 group-hover:scale-110 transition-transform">
+                    <Play className="h-8 w-8 text-primary-foreground ml-1" fill="currentColor" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Tour Features */}
+            <div className="grid sm:grid-cols-3 gap-6 mt-8">
+              <div className="text-center">
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                  <Monitor className="h-5 w-5 text-primary" />
+                </div>
+                <h3 className="font-semibold text-foreground mb-1">Dashboard Overview</h3>
+                <p className="text-sm text-muted-foreground">See how real-time metrics keep your team informed at a glance.</p>
+              </div>
+              <div className="text-center">
+                <div className="h-10 w-10 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-3">
+                  <Activity className="h-5 w-5 text-destructive" />
+                </div>
+                <h3 className="font-semibold text-foreground mb-1">Risk Alerts</h3>
+                <p className="text-sm text-muted-foreground">Watch AI-powered early warning systems identify at-risk patients.</p>
+              </div>
+              <div className="text-center">
+                <div className="h-10 w-10 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-3">
+                  <BarChart3 className="h-5 w-5 text-success" />
+                </div>
+                <h3 className="font-semibold text-foreground mb-1">Actionable Insights</h3>
+                <p className="text-sm text-muted-foreground">Discover how explainable AI drives confident clinical decisions.</p>
+              </div>
             </div>
           </div>
         </div>
