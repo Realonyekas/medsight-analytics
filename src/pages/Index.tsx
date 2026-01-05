@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, Activity, TrendingDown, Zap, CheckCircle, ArrowRight, Send, Building2, User, Mail, Phone, MessageSquare, Play, Monitor, BarChart3, Users, HelpCircle, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -22,6 +22,17 @@ const Index = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTourTab, setActiveTourTab] = useState<TourTab>('patients');
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [showStickyCta, setShowStickyCta] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show sticky CTA after scrolling past 500px (approximately past hero section)
+      setShowStickyCta(window.scrollY > 500);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -57,6 +68,51 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Sticky CTA Bar */}
+      <AnimatePresence>
+        {showStickyCta && (
+          <motion.div
+            initial={{ y: -100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -100, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="fixed top-0 left-0 right-0 z-[60] bg-sidebar/95 backdrop-blur-md border-b border-sidebar-border shadow-lg"
+          >
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex items-center justify-between h-14">
+                <div className="flex items-center gap-3">
+                  <img 
+                    src={medsightLogo} 
+                    alt="MedSight Analytics" 
+                    className="h-8 w-auto object-contain"
+                  />
+                  <span className="hidden sm:block text-sm text-sidebar-foreground/80">
+                    Clinical intelligence you can act on
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <a href="#value" className="hidden md:block">
+                    <Button variant="ghost" size="sm" className="text-sidebar-foreground/80 hover:text-sidebar-foreground hover:bg-sidebar-accent">
+                      See the Value
+                    </Button>
+                  </a>
+                  <a href="#demo" className="hidden sm:block">
+                    <Button variant="ghost" size="sm" className="text-sidebar-foreground/80 hover:text-sidebar-foreground hover:bg-sidebar-accent">
+                      Request Demo
+                    </Button>
+                  </a>
+                  <Link to="/login?signup=true">
+                    <Button size="sm" className="font-semibold shadow-lg shadow-primary/30">
+                      Sign Up Free
+                      <ArrowRight className="ml-1.5 h-4 w-4" />
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
