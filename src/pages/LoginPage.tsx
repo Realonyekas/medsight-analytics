@@ -4,6 +4,7 @@ import { Eye, EyeOff, Shield, Mail, Lock, User, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import medsightLogo from '@/assets/medsight-logo.jpg';
+import { supabase } from '@/integrations/supabase/client';
 import { z } from 'zod';
 
 const loginSchema = z.object({
@@ -24,6 +25,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [isSignUp, setIsSignUp] = useState(searchParams.get('signup') === 'true');
+  const isDemo = searchParams.get('demo') === 'true';
   
   const { login, signUp } = useAuth();
   const navigate = useNavigate();
@@ -31,6 +33,18 @@ export default function LoginPage() {
   useEffect(() => {
     setIsSignUp(searchParams.get('signup') === 'true');
   }, [searchParams]);
+
+  const joinDemoHospital = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('link-demo-hospital');
+      if (error) throw error;
+      if (!data?.success) throw new Error(data?.error || 'Failed to join demo');
+      return true;
+    } catch (err) {
+      console.error('Failed to join demo hospital:', err);
+      return false;
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,14 +77,22 @@ export default function LoginPage() {
         if (error) {
           setError(error);
         } else {
-          navigate('/dashboard');
+          // If demo mode, join demo hospital after signup
+          if (isDemo) {
+            await joinDemoHospital();
+          }
+          window.location.href = '/dashboard';
         }
       } else {
         const { error } = await login(email, password);
         if (error) {
           setError(error);
         } else {
-          navigate('/dashboard');
+          // If demo mode, join demo hospital after login
+          if (isDemo) {
+            await joinDemoHospital();
+          }
+          window.location.href = '/dashboard';
         }
       }
     } catch {
@@ -163,12 +185,14 @@ export default function LoginPage() {
 
           <div className="text-center lg:text-left">
             <h2 className="text-3xl font-bold text-foreground tracking-tight">
-              {isSignUp ? 'Start Your Free Trial' : 'Welcome Back'}
+              {isDemo ? 'Try the Demo' : (isSignUp ? 'Start Your Free Trial' : 'Welcome Back')}
             </h2>
             <p className="text-muted-foreground mt-2 text-base">
-              {isSignUp 
-                ? 'Create your account to transform hospital operations with explainable AI.' 
-                : "Sign in to access your hospital's analytics dashboard."}
+              {isDemo
+                ? 'Create a quick account to explore MedSight with sample hospital data.'
+                : (isSignUp 
+                  ? 'Create your account to transform hospital operations with explainable AI.' 
+                  : "Sign in to access your hospital's analytics dashboard.")}
             </p>
           </div>
 
@@ -256,7 +280,11 @@ export default function LoginPage() {
             )}
 
             <Button type="submit" className="w-full h-12 text-base font-semibold rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200" disabled={isLoading}>
-              {isLoading ? (isSignUp ? 'Creating account...' : 'Signing in...') : (isSignUp ? 'Sign Up' : 'Sign In')}
+              {isLoading 
+                ? (isSignUp ? 'Creating account...' : 'Signing in...') 
+                : (isDemo 
+                  ? (isSignUp ? 'Create Account & Try Demo' : 'Sign In & Try Demo')
+                  : (isSignUp ? 'Sign Up' : 'Sign In'))}
             </Button>
           </form>
 
