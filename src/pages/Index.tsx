@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Shield, Activity, TrendingDown, Zap, CheckCircle, ArrowRight, Send, Building2, User, Mail, Phone, MessageSquare, Play, Monitor, BarChart3, Users } from 'lucide-react';
+import { Shield, Activity, TrendingDown, Zap, CheckCircle, ArrowRight, Send, Building2, User, Mail, Phone, MessageSquare, Play, Monitor, BarChart3, Users, HelpCircle, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,6 +21,7 @@ const Index = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTourTab, setActiveTourTab] = useState<TourTab>('patients');
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -639,6 +640,105 @@ const Index = () => {
                 </ul>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-accent/30 to-background">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+              <HelpCircle className="h-4 w-4" />
+              Common Questions
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight mb-4">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Get answers to the most common questions about MedSight Analytics implementation, security, and integration.
+            </p>
+          </div>
+          
+          <div className="space-y-3">
+            {[
+              {
+                question: "How long does implementation take?",
+                answer: "Most hospitals are fully operational within 72 hours. Our integration layer connects to your existing EMR or hospital management system without requiring data migration. We handle the technical setup while your team continues normal operations."
+              },
+              {
+                question: "What systems does MedSight integrate with?",
+                answer: "MedSight Analytics integrates with all major hospital management systems and EMRs used in Nigeria, including proprietary solutions. Our API-based integration works with any system that can export patient and operational data. We also support manual data uploads for facilities transitioning to digital records."
+              },
+              {
+                question: "How is patient data protected?",
+                answer: "We implement HIPAA-aligned security controls including AES-256 encryption for data at rest and in transit, role-based access control, comprehensive audit trails, and zero third-party data sharing. Nigerian data residency options are available, and we undergo annual third-party security audits."
+              },
+              {
+                question: "Do we need IT staff to manage MedSight?",
+                answer: "No dedicated IT staff required. MedSight is a fully managed cloud solution with an intuitive interface designed for clinical and administrative users. Our support team handles all technical maintenance, updates, and monitoring."
+              },
+              {
+                question: "What kind of training is provided?",
+                answer: "We provide comprehensive onboarding including live training sessions for your team, video tutorials, and 24/7 access to our support team. Most staff become proficient within a single training session—the interface is designed to feel familiar to anyone who uses modern software."
+              },
+              {
+                question: "How does the AI explain its recommendations?",
+                answer: "Every AI-generated insight includes clear explanations showing which data points contributed to the recommendation. Clinicians can see the reasoning behind risk scores, predicted outcomes, and suggested actions—making it easy to validate and act on insights with confidence."
+              },
+              {
+                question: "What's the pricing model?",
+                answer: "We offer flexible plans based on hospital size and feature requirements. Enterprise plans start at ₦1.2M/month and include dedicated support, custom integrations, and unlimited users. Contact us for a personalized quote based on your specific needs."
+              },
+              {
+                question: "Can we try before we commit?",
+                answer: "Yes. We offer a hands-on demo with sample data so you can explore the platform's capabilities. We can also run a pilot program with a subset of your departments before full deployment."
+              },
+            ].map((faq, i) => (
+              <motion.div
+                key={i}
+                initial={false}
+                className="rounded-xl border border-border bg-card overflow-hidden"
+              >
+                <button
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  className="w-full flex items-center justify-between p-5 text-left hover:bg-muted/50 transition-colors"
+                >
+                  <span className="font-semibold text-foreground pr-4">{faq.question}</span>
+                  <motion.div
+                    animate={{ rotate: openFaq === i ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex-shrink-0"
+                  >
+                    <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                  </motion.div>
+                </button>
+                <AnimatePresence initial={false}>
+                  {openFaq === i && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                    >
+                      <div className="px-5 pb-5 text-muted-foreground leading-relaxed border-t border-border pt-4">
+                        {faq.answer}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            ))}
+          </div>
+          
+          <div className="text-center mt-10">
+            <p className="text-muted-foreground mb-4">Still have questions?</p>
+            <a href="#demo">
+              <Button variant="outline" className="font-semibold">
+                Talk to Our Team
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </a>
           </div>
         </div>
       </section>
