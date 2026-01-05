@@ -125,26 +125,26 @@ export default function LoginPage() {
           />
           <h1 className="text-4xl font-bold text-sidebar-foreground leading-tight tracking-tight">
             {isSignUp ? (
-              <>Transform Your<br />Hospital Operations</>
+              <>Clinical Intelligence<br />That Drives Results</>
             ) : (
-              <>Welcome Back to<br />Smarter Insights</>
+              <>Your Insights<br />Await</>
             )}
           </h1>
           <p className="text-lg text-sidebar-foreground/80 leading-relaxed max-w-md">
             {isSignUp 
-              ? 'Join forward-thinking Nigerian hospitals using AI-powered analytics to reduce costs, flag high-risk patients, and improve clinical decisions.'
-              : 'Your team is already benefiting from data-driven decisions. Sign in to continue making an impact.'
+              ? 'Join Nigerian healthcare leaders using explainable AI to reduce admin workload by 40%, flag high-risk patients earlier, and cut avoidable costs.'
+              : 'Continue leveraging data-driven insights to improve patient outcomes and operational efficiency.'
             }
           </p>
           <div className="flex flex-wrap gap-3">
             <span className="px-4 py-2 rounded-full bg-sidebar-accent/80 text-sidebar-accent-foreground text-sm font-medium backdrop-blur-sm">
-              Risk Prediction
+              Early Risk Detection
             </span>
             <span className="px-4 py-2 rounded-full bg-sidebar-accent/80 text-sidebar-accent-foreground text-sm font-medium backdrop-blur-sm">
-              Operational Analytics
+              Explainable AI
             </span>
             <span className="px-4 py-2 rounded-full bg-sidebar-accent/80 text-sidebar-accent-foreground text-sm font-medium backdrop-blur-sm">
-              Cost Optimization
+              72-Hour Setup
             </span>
           </div>
         </div>
@@ -154,10 +154,10 @@ export default function LoginPage() {
             <div className="h-8 w-8 rounded-full bg-success/20 flex items-center justify-center">
               <Shield className="h-4 w-4 text-success" />
             </div>
-            <span className="font-medium">HIPAA-Aligned Data Security</span>
+            <span className="font-medium">HIPAA-Aligned Security Standards</span>
           </div>
           <p className="text-xs text-sidebar-foreground/50 pl-11">
-            Your patient data is encrypted and stored securely. We never share information with third parties.
+            AES-256 encryption, role-based access control, and complete audit trails. Your data stays in your control.
           </p>
         </div>
       </div>
@@ -185,14 +185,14 @@ export default function LoginPage() {
 
           <div className="text-center lg:text-left">
             <h2 className="text-3xl font-bold text-foreground tracking-tight">
-              {isDemo ? 'Try the Demo' : (isSignUp ? 'Start Your Free Trial' : 'Welcome Back')}
+              {isDemo ? 'Explore the Platform' : (isSignUp ? 'Get Started Today' : 'Welcome Back')}
             </h2>
             <p className="text-muted-foreground mt-2 text-base">
               {isDemo
-                ? 'Create a quick account to explore MedSight with sample hospital data.'
+                ? 'Create an account to experience MedSight Analytics with real sample data.'
                 : (isSignUp 
-                  ? 'Create your account to transform hospital operations with explainable AI.' 
-                  : "Sign in to access your hospital's analytics dashboard.")}
+                  ? 'Create your account to start transforming patient data into actionable insights.' 
+                  : "Access your hospital's analytics dashboard and continue improving outcomes.")}
             </p>
           </div>
 
