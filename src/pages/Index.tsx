@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, Activity, TrendingDown, Zap, CheckCircle, ArrowRight, Send, Building2, User, Mail, Phone, MessageSquare, Play, Monitor, BarChart3, Users } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -307,17 +308,29 @@ const Index = () => {
                     {/* Mock Header */}
                     <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-card/50">
                       <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-lg bg-primary/20 flex items-center justify-center">
+                        <motion.div 
+                          key={activeTourTab}
+                          initial={{ scale: 0.8, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ duration: 0.2 }}
+                          className="h-8 w-8 rounded-lg bg-primary/20 flex items-center justify-center"
+                        >
                           {activeTourTab === 'patients' && <Users className="h-4 w-4 text-primary" />}
                           {activeTourTab === 'analytics' && <BarChart3 className="h-4 w-4 text-primary" />}
                           {activeTourTab === 'alerts' && <Activity className="h-4 w-4 text-primary" />}
-                        </div>
+                        </motion.div>
                         <div>
-                          <div className="text-sm font-semibold text-foreground">
+                          <motion.div 
+                            key={`title-${activeTourTab}`}
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.2, delay: 0.1 }}
+                            className="text-sm font-semibold text-foreground"
+                          >
                             {activeTourTab === 'patients' && 'Patient Management'}
                             {activeTourTab === 'analytics' && 'Analytics Dashboard'}
                             {activeTourTab === 'alerts' && 'Risk Alerts'}
-                          </div>
+                          </motion.div>
                           <div className="text-xs text-muted-foreground">Lagos General Hospital</div>
                         </div>
                       </div>
@@ -328,157 +341,205 @@ const Index = () => {
                       </div>
                     </div>
                     
-                    {/* Patients View */}
-                    {activeTourTab === 'patients' && (
-                      <div className="flex-1 p-4 overflow-hidden">
-                        <div className="flex items-center justify-between mb-4">
-                          <div className="text-xs font-medium text-muted-foreground">Active Patients (247)</div>
-                          <div className="flex gap-2">
-                            <div className="px-2 py-1 rounded bg-primary/10 text-primary text-xs font-medium">All</div>
-                            <div className="px-2 py-1 rounded bg-muted text-muted-foreground text-xs">High Risk</div>
-                            <div className="px-2 py-1 rounded bg-muted text-muted-foreground text-xs hidden sm:block">ICU</div>
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          {[
-                            { name: 'Adaora Okonkwo', age: 67, risk: 'high', diagnosis: 'Cardiac Arrhythmia', stay: '5 days' },
-                            { name: 'Emeka Nwosu', age: 45, risk: 'medium', diagnosis: 'Post-Op Recovery', stay: '3 days' },
-                            { name: 'Fatima Ibrahim', age: 34, risk: 'low', diagnosis: 'Routine Checkup', stay: '1 day' },
-                            { name: 'Chinedu Eze', age: 52, risk: 'high', diagnosis: 'Diabetic Complications', stay: '7 days' },
-                          ].map((patient, i) => (
-                            <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-card border border-border hover:border-primary/30 transition-colors">
-                              <div className="flex items-center gap-3">
-                                <div className={`h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold ${
-                                  patient.risk === 'high' ? 'bg-destructive/20 text-destructive' :
-                                  patient.risk === 'medium' ? 'bg-warning/20 text-warning' :
-                                  'bg-success/20 text-success'
-                                }`}>
-                                  {patient.name.split(' ').map(n => n[0]).join('')}
-                                </div>
-                                <div>
-                                  <div className="text-sm font-medium text-foreground">{patient.name}</div>
-                                  <div className="text-xs text-muted-foreground">{patient.diagnosis}</div>
-                                </div>
-                              </div>
-                              <div className="text-right hidden sm:block">
-                                <div className={`text-xs font-medium px-2 py-0.5 rounded ${
-                                  patient.risk === 'high' ? 'bg-destructive/10 text-destructive' :
-                                  patient.risk === 'medium' ? 'bg-warning/10 text-warning' :
-                                  'bg-success/10 text-success'
-                                }`}>
-                                  {patient.risk} risk
-                                </div>
-                                <div className="text-xs text-muted-foreground mt-1">{patient.stay}</div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    
-                    {/* Analytics View */}
-                    {activeTourTab === 'analytics' && (
-                      <div className="flex-1 p-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        <div className="col-span-1 rounded-lg bg-card border border-border p-3">
-                          <div className="text-xs text-muted-foreground mb-1">Bed Occupancy</div>
-                          <div className="text-xl font-bold text-foreground">87%</div>
-                          <div className="text-xs text-success flex items-center gap-1">
-                            <TrendingDown className="h-3 w-3" /> Optimal
-                          </div>
-                        </div>
-                        <div className="col-span-1 rounded-lg bg-card border border-border p-3">
-                          <div className="text-xs text-muted-foreground mb-1">Avg LOS</div>
-                          <div className="text-xl font-bold text-foreground">4.2d</div>
-                          <div className="text-xs text-success flex items-center gap-1">
-                            <TrendingDown className="h-3 w-3" /> -12%
-                          </div>
-                        </div>
-                        <div className="col-span-1 rounded-lg bg-card border border-border p-3">
-                          <div className="text-xs text-muted-foreground mb-1">Readmissions</div>
-                          <div className="text-xl font-bold text-foreground">8.4%</div>
-                          <div className="text-xs text-success flex items-center gap-1">
-                            <TrendingDown className="h-3 w-3" /> -5%
-                          </div>
-                        </div>
-                        <div className="col-span-1 rounded-lg bg-card border border-border p-3">
-                          <div className="text-xs text-muted-foreground mb-1">Cost Saved</div>
-                          <div className="text-xl font-bold text-foreground">₦2.4M</div>
-                          <div className="text-xs text-success flex items-center gap-1">
-                            <Zap className="h-3 w-3" /> This month
-                          </div>
-                        </div>
-                        <div className="col-span-2 sm:col-span-4 rounded-lg bg-card border border-border p-3">
-                          <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs font-medium text-muted-foreground">Weekly Admissions vs Discharges</span>
-                            <div className="flex items-center gap-3 text-xs">
-                              <span className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-primary" /> Admissions</span>
-                              <span className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-success" /> Discharges</span>
+                    {/* Content with AnimatePresence */}
+                    <AnimatePresence mode="wait">
+                      {/* Patients View */}
+                      {activeTourTab === 'patients' && (
+                        <motion.div 
+                          key="patients"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -20 }}
+                          transition={{ duration: 0.3, ease: "easeOut" }}
+                          className="flex-1 p-4 overflow-hidden"
+                        >
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="text-xs font-medium text-muted-foreground">Active Patients (247)</div>
+                            <div className="flex gap-2">
+                              <div className="px-2 py-1 rounded bg-primary/10 text-primary text-xs font-medium">All</div>
+                              <div className="px-2 py-1 rounded bg-muted text-muted-foreground text-xs">High Risk</div>
+                              <div className="px-2 py-1 rounded bg-muted text-muted-foreground text-xs hidden sm:block">ICU</div>
                             </div>
                           </div>
-                          <div className="flex items-end gap-2 h-20">
+                          <div className="space-y-2">
                             {[
-                              { a: 45, d: 42 }, { a: 52, d: 48 }, { a: 38, d: 45 }, { a: 65, d: 55 },
-                              { a: 48, d: 52 }, { a: 72, d: 68 }, { a: 55, d: 58 }
-                            ].map((day, i) => (
-                              <div key={i} className="flex-1 flex gap-0.5">
-                                <div className="flex-1 rounded-t bg-primary/60" style={{ height: `${day.a}%` }} />
-                                <div className="flex-1 rounded-t bg-success/60" style={{ height: `${day.d}%` }} />
-                              </div>
+                              { name: 'Adaora Okonkwo', age: 67, risk: 'high', diagnosis: 'Cardiac Arrhythmia', stay: '5 days' },
+                              { name: 'Emeka Nwosu', age: 45, risk: 'medium', diagnosis: 'Post-Op Recovery', stay: '3 days' },
+                              { name: 'Fatima Ibrahim', age: 34, risk: 'low', diagnosis: 'Routine Checkup', stay: '1 day' },
+                              { name: 'Chinedu Eze', age: 52, risk: 'high', diagnosis: 'Diabetic Complications', stay: '7 days' },
+                            ].map((patient, i) => (
+                              <motion.div 
+                                key={i} 
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.3, delay: i * 0.05 }}
+                                className="flex items-center justify-between p-3 rounded-lg bg-card border border-border hover:border-primary/30 transition-colors"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className={`h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold ${
+                                    patient.risk === 'high' ? 'bg-destructive/20 text-destructive' :
+                                    patient.risk === 'medium' ? 'bg-warning/20 text-warning' :
+                                    'bg-success/20 text-success'
+                                  }`}>
+                                    {patient.name.split(' ').map(n => n[0]).join('')}
+                                  </div>
+                                  <div>
+                                    <div className="text-sm font-medium text-foreground">{patient.name}</div>
+                                    <div className="text-xs text-muted-foreground">{patient.diagnosis}</div>
+                                  </div>
+                                </div>
+                                <div className="text-right hidden sm:block">
+                                  <div className={`text-xs font-medium px-2 py-0.5 rounded ${
+                                    patient.risk === 'high' ? 'bg-destructive/10 text-destructive' :
+                                    patient.risk === 'medium' ? 'bg-warning/10 text-warning' :
+                                    'bg-success/10 text-success'
+                                  }`}>
+                                    {patient.risk} risk
+                                  </div>
+                                  <div className="text-xs text-muted-foreground mt-1">{patient.stay}</div>
+                                </div>
+                              </motion.div>
                             ))}
                           </div>
-                          <div className="flex justify-between mt-2 text-xs text-muted-foreground">
-                            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    
-                    {/* Alerts View */}
-                    {activeTourTab === 'alerts' && (
-                      <div className="flex-1 p-4 overflow-hidden">
-                        <div className="flex items-center justify-between mb-4">
-                          <div className="text-xs font-medium text-muted-foreground">Active Alerts (12)</div>
-                          <div className="flex gap-2">
-                            <div className="px-2 py-1 rounded bg-destructive/10 text-destructive text-xs font-medium">3 Critical</div>
-                            <div className="px-2 py-1 rounded bg-warning/10 text-warning text-xs font-medium">5 Warning</div>
-                          </div>
-                        </div>
-                        <div className="space-y-2">
+                        </motion.div>
+                      )}
+                      
+                      {/* Analytics View */}
+                      {activeTourTab === 'analytics' && (
+                        <motion.div 
+                          key="analytics"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -20 }}
+                          transition={{ duration: 0.3, ease: "easeOut" }}
+                          className="flex-1 p-4 grid grid-cols-2 sm:grid-cols-4 gap-3"
+                        >
                           {[
-                            { type: 'critical', title: 'Deterioration Risk Detected', patient: 'Adaora Okonkwo', time: '2 min ago', desc: 'Vital signs trending down, SpO2 at 91%' },
-                            { type: 'critical', title: 'High Readmission Risk', patient: 'Chinedu Eze', time: '15 min ago', desc: 'Predicted 78% readmission probability' },
-                            { type: 'warning', title: 'Extended Length of Stay', patient: 'ICU Ward', time: '1 hr ago', desc: '3 patients exceeding predicted LOS' },
-                            { type: 'info', title: 'Discharge Ready', patient: 'Fatima Ibrahim', time: '2 hrs ago', desc: 'All criteria met for safe discharge' },
-                          ].map((alert, i) => (
-                            <div key={i} className={`flex items-start gap-3 p-3 rounded-lg border ${
-                              alert.type === 'critical' ? 'bg-destructive/5 border-destructive/20' :
-                              alert.type === 'warning' ? 'bg-warning/5 border-warning/20' :
-                              'bg-card border-border'
-                            }`}>
-                              <div className={`h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                                alert.type === 'critical' ? 'bg-destructive/20' :
-                                alert.type === 'warning' ? 'bg-warning/20' :
-                                'bg-success/20'
-                              }`}>
-                                <Activity className={`h-4 w-4 ${
-                                  alert.type === 'critical' ? 'text-destructive' :
-                                  alert.type === 'warning' ? 'text-warning' :
-                                  'text-success'
-                                }`} />
+                            { label: 'Bed Occupancy', value: '87%', change: 'Optimal', icon: TrendingDown },
+                            { label: 'Avg LOS', value: '4.2d', change: '-12%', icon: TrendingDown },
+                            { label: 'Readmissions', value: '8.4%', change: '-5%', icon: TrendingDown },
+                            { label: 'Cost Saved', value: '₦2.4M', change: 'This month', icon: Zap },
+                          ].map((metric, i) => (
+                            <motion.div 
+                              key={i}
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ duration: 0.3, delay: i * 0.05 }}
+                              className="col-span-1 rounded-lg bg-card border border-border p-3"
+                            >
+                              <div className="text-xs text-muted-foreground mb-1">{metric.label}</div>
+                              <div className="text-xl font-bold text-foreground">{metric.value}</div>
+                              <div className="text-xs text-success flex items-center gap-1">
+                                <metric.icon className="h-3 w-3" /> {metric.change}
                               </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center justify-between gap-2">
-                                  <div className="text-sm font-medium text-foreground truncate">{alert.title}</div>
-                                  <div className="text-xs text-muted-foreground flex-shrink-0">{alert.time}</div>
-                                </div>
-                                <div className="text-xs text-muted-foreground">{alert.patient}</div>
-                                <div className="text-xs text-muted-foreground/70 mt-1 hidden sm:block">{alert.desc}</div>
+                            </motion.div>
+                          ))}
+                          <motion.div 
+                            initial={{ opacity: 0, scaleY: 0 }}
+                            animate={{ opacity: 1, scaleY: 1 }}
+                            transition={{ duration: 0.4, delay: 0.2 }}
+                            style={{ transformOrigin: 'bottom' }}
+                            className="col-span-2 sm:col-span-4 rounded-lg bg-card border border-border p-3"
+                          >
+                            <div className="flex items-center justify-between mb-3">
+                              <span className="text-xs font-medium text-muted-foreground">Weekly Admissions vs Discharges</span>
+                              <div className="flex items-center gap-3 text-xs">
+                                <span className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-primary" /> Admissions</span>
+                                <span className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-success" /> Discharges</span>
                               </div>
                             </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                            <div className="flex items-end gap-2 h-20">
+                              {[
+                                { a: 45, d: 42 }, { a: 52, d: 48 }, { a: 38, d: 45 }, { a: 65, d: 55 },
+                                { a: 48, d: 52 }, { a: 72, d: 68 }, { a: 55, d: 58 }
+                              ].map((day, i) => (
+                                <motion.div 
+                                  key={i} 
+                                  initial={{ scaleY: 0 }}
+                                  animate={{ scaleY: 1 }}
+                                  transition={{ duration: 0.4, delay: 0.3 + i * 0.05 }}
+                                  style={{ transformOrigin: 'bottom' }}
+                                  className="flex-1 flex gap-0.5 h-full"
+                                >
+                                  <div className="flex-1 rounded-t bg-primary/60" style={{ height: `${day.a}%` }} />
+                                  <div className="flex-1 rounded-t bg-success/60" style={{ height: `${day.d}%` }} />
+                                </motion.div>
+                              ))}
+                            </div>
+                            <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+                              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                            </div>
+                          </motion.div>
+                        </motion.div>
+                      )}
+                      
+                      {/* Alerts View */}
+                      {activeTourTab === 'alerts' && (
+                        <motion.div 
+                          key="alerts"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -20 }}
+                          transition={{ duration: 0.3, ease: "easeOut" }}
+                          className="flex-1 p-4 overflow-hidden"
+                        >
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="text-xs font-medium text-muted-foreground">Active Alerts (12)</div>
+                            <div className="flex gap-2">
+                              <motion.div 
+                                initial={{ scale: 0.8 }}
+                                animate={{ scale: [1, 1.05, 1] }}
+                                transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 2 }}
+                                className="px-2 py-1 rounded bg-destructive/10 text-destructive text-xs font-medium"
+                              >
+                                3 Critical
+                              </motion.div>
+                              <div className="px-2 py-1 rounded bg-warning/10 text-warning text-xs font-medium">5 Warning</div>
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            {[
+                              { type: 'critical', title: 'Deterioration Risk Detected', patient: 'Adaora Okonkwo', time: '2 min ago', desc: 'Vital signs trending down, SpO2 at 91%' },
+                              { type: 'critical', title: 'High Readmission Risk', patient: 'Chinedu Eze', time: '15 min ago', desc: 'Predicted 78% readmission probability' },
+                              { type: 'warning', title: 'Extended Length of Stay', patient: 'ICU Ward', time: '1 hr ago', desc: '3 patients exceeding predicted LOS' },
+                              { type: 'info', title: 'Discharge Ready', patient: 'Fatima Ibrahim', time: '2 hrs ago', desc: 'All criteria met for safe discharge' },
+                            ].map((alert, i) => (
+                              <motion.div 
+                                key={i} 
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.3, delay: i * 0.08 }}
+                                className={`flex items-start gap-3 p-3 rounded-lg border ${
+                                  alert.type === 'critical' ? 'bg-destructive/5 border-destructive/20' :
+                                  alert.type === 'warning' ? 'bg-warning/5 border-warning/20' :
+                                  'bg-card border-border'
+                                }`}
+                              >
+                                <div className={`h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                  alert.type === 'critical' ? 'bg-destructive/20' :
+                                  alert.type === 'warning' ? 'bg-warning/20' :
+                                  'bg-success/20'
+                                }`}>
+                                  <Activity className={`h-4 w-4 ${
+                                    alert.type === 'critical' ? 'text-destructive' :
+                                    alert.type === 'warning' ? 'text-warning' :
+                                    'text-success'
+                                  }`} />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center justify-between gap-2">
+                                    <div className="text-sm font-medium text-foreground truncate">{alert.title}</div>
+                                    <div className="text-xs text-muted-foreground flex-shrink-0">{alert.time}</div>
+                                  </div>
+                                  <div className="text-xs text-muted-foreground">{alert.patient}</div>
+                                  <div className="text-xs text-muted-foreground/70 mt-1 hidden sm:block">{alert.desc}</div>
+                                </div>
+                              </motion.div>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
               </div>
