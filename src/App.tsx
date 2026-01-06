@@ -16,6 +16,7 @@ import RecommendationsPage from "./pages/RecommendationsPage";
 import ReportsPage from "./pages/ReportsPage";
 import SettingsPage from "./pages/SettingsPage";
 import DemoRequestsPage from "./pages/DemoRequestsPage";
+import PricingPage from "./pages/PricingPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -52,6 +53,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Index />} />
+      <Route path="/pricing" element={<PricingPage />} />
       <Route path="/login" element={isAuthenticated ? <Navigate to={getAuthRedirect()} replace /> : <LoginPage />} />
       <Route path="/setup" element={
         !isAuthenticated ? <Navigate to="/login" replace /> :

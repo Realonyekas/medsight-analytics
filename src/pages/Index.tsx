@@ -123,6 +123,11 @@ const Index = () => {
               className="h-10 w-auto object-contain"
             />
             <div className="flex items-center gap-4">
+              <Link to="/pricing">
+                <Button variant="ghost" className="font-medium">
+                  Pricing
+                </Button>
+              </Link>
               <Link to="/login">
                 <Button variant="ghost" className="font-medium">
                   Sign In
