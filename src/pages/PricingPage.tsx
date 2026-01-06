@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Check, X, ArrowRight, Zap, Building2, Rocket, HelpCircle, ArrowLeft } from 'lucide-react';
+import { Check, X, ArrowRight, Zap, Building2, Rocket, HelpCircle, ArrowLeft, Calculator, TrendingUp, DollarSign, Users, Activity } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Label } from '@/components/ui/label';
+import { Slider } from '@/components/ui/slider';
 import medsightLogo from '@/assets/medsight-logo.jpg';
 
 interface PlanFeature {
@@ -121,6 +123,78 @@ const faqs = [
 
 const PricingPage = () => {
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('monthly');
+  
+  // ROI Calculator state
+  const [patientVolume, setPatientVolume] = useState(1000);
+  const [avgLos, setAvgLos] = useState(5);
+  const [readmissionRate, setReadmissionRate] = useState(15);
+
+  // ROI calculations
+  const roiCalculations = useMemo(() => {
+    // Base assumptions (in Naira, converted from typical Nigerian hospital metrics)
+    const avgDailyCostPerPatient = 150000; // ₦150,000 per day
+    const avgReadmissionCost = 500000; // ₦500,000 per readmission
+    const avgStaffHoursPerPatient = 4;
+    const staffHourlyCost = 5000; // ₦5,000 per hour
+
+    // MedSight impact rates (conservative estimates based on industry benchmarks)
+    const losReductionRate = 0.12; // 12% reduction in length of stay
+    const readmissionReductionRate = 0.18; // 18% reduction in readmissions
+    const staffEfficiencyGain = 0.15; // 15% improvement in staff efficiency
+
+    // Calculate current costs
+    const currentLosCost = patientVolume * avgLos * avgDailyCostPerPatient;
+    const currentReadmissionCost = patientVolume * (readmissionRate / 100) * avgReadmissionCost;
+    const currentStaffCost = patientVolume * avgStaffHoursPerPatient * staffHourlyCost;
+
+    // Calculate savings with MedSight
+    const losSavings = currentLosCost * losReductionRate;
+    const readmissionSavings = currentReadmissionCost * readmissionReductionRate;
+    const staffSavings = currentStaffCost * staffEfficiencyGain;
+
+    const totalAnnualSavings = losSavings + readmissionSavings + staffSavings;
+    
+    // Determine recommended plan based on patient volume
+    let recommendedPlan = 'Starter';
+    let planCost = 499 * 12; // Annual cost in USD
+    if (patientVolume > 2000) {
+      recommendedPlan = 'Enterprise';
+      planCost = 3000 * 12;
+    } else if (patientVolume > 500) {
+      recommendedPlan = 'Growth';
+      planCost = 1200 * 12;
+    }
+
+    // Convert plan cost to Naira (approximate exchange rate)
+    const planCostNaira = planCost * 1500;
+    
+    const roi = ((totalAnnualSavings - planCostNaira) / planCostNaira) * 100;
+    const paybackMonths = planCostNaira / (totalAnnualSavings / 12);
+
+    return {
+      losSavings,
+      readmissionSavings,
+      staffSavings,
+      totalAnnualSavings,
+      recommendedPlan,
+      planCostNaira,
+      roi: Math.max(0, roi),
+      paybackMonths: Math.min(12, Math.max(0.5, paybackMonths)),
+    };
+  }, [patientVolume, avgLos, readmissionRate]);
+
+  const formatNaira = (amount: number) => {
+    if (amount >= 1000000000) {
+      return `₦${(amount / 1000000000).toFixed(1)}B`;
+    }
+    if (amount >= 1000000) {
+      return `₦${(amount / 1000000).toFixed(1)}M`;
+    }
+    if (amount >= 1000) {
+      return `₦${(amount / 1000).toFixed(0)}K`;
+    }
+    return `₦${amount.toFixed(0)}`;
+  };
 
   const getPrice = (basePrice: number) => {
     if (billingPeriod === 'annual') {
@@ -387,6 +461,205 @@ const PricingPage = () => {
                   </tbody>
                 </table>
               </div>
+            </Card>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ROI Calculator Section */}
+      <section className="py-16">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <Badge variant="secondary" className="mb-4">
+              <Calculator className="h-3 w-3 mr-1" />
+              ROI Calculator
+            </Badge>
+            <h2 className="text-3xl font-bold text-foreground mb-4">
+              Calculate Your Potential Savings
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              See how MedSight can reduce costs and improve outcomes for your hospital
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <Card className="overflow-hidden">
+              <CardContent className="p-0">
+                <div className="grid lg:grid-cols-2">
+                  {/* Input Section */}
+                  <div className="p-6 lg:p-8 bg-muted/30">
+                    <h3 className="text-lg font-semibold text-foreground mb-6">
+                      Your Hospital Metrics
+                    </h3>
+                    
+                    <div className="space-y-8">
+                      {/* Patient Volume Slider */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <Label className="flex items-center gap-2">
+                            <Users className="h-4 w-4 text-muted-foreground" />
+                            Annual Patient Volume
+                          </Label>
+                          <span className="text-lg font-semibold text-foreground">
+                            {patientVolume.toLocaleString()}
+                          </span>
+                        </div>
+                        <Slider
+                          value={[patientVolume]}
+                          onValueChange={(value) => setPatientVolume(value[0])}
+                          min={100}
+                          max={10000}
+                          step={100}
+                          className="w-full"
+                        />
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>100</span>
+                          <span>10,000</span>
+                        </div>
+                      </div>
+
+                      {/* Average Length of Stay Slider */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <Label className="flex items-center gap-2">
+                            <Activity className="h-4 w-4 text-muted-foreground" />
+                            Avg. Length of Stay (days)
+                          </Label>
+                          <span className="text-lg font-semibold text-foreground">
+                            {avgLos}
+                          </span>
+                        </div>
+                        <Slider
+                          value={[avgLos]}
+                          onValueChange={(value) => setAvgLos(value[0])}
+                          min={1}
+                          max={14}
+                          step={1}
+                          className="w-full"
+                        />
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>1 day</span>
+                          <span>14 days</span>
+                        </div>
+                      </div>
+
+                      {/* Readmission Rate Slider */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <Label className="flex items-center gap-2">
+                            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                            Current Readmission Rate
+                          </Label>
+                          <span className="text-lg font-semibold text-foreground">
+                            {readmissionRate}%
+                          </span>
+                        </div>
+                        <Slider
+                          value={[readmissionRate]}
+                          onValueChange={(value) => setReadmissionRate(value[0])}
+                          min={5}
+                          max={30}
+                          step={1}
+                          className="w-full"
+                        />
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>5%</span>
+                          <span>30%</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-muted-foreground mt-6">
+                      * Calculations based on industry benchmarks and conservative estimates
+                    </p>
+                  </div>
+
+                  {/* Results Section */}
+                  <div className="p-6 lg:p-8 bg-sidebar">
+                    <h3 className="text-lg font-semibold text-sidebar-foreground mb-6">
+                      Your Potential Savings
+                    </h3>
+
+                    <div className="space-y-4 mb-8">
+                      <div className="flex items-center justify-between p-4 rounded-lg bg-sidebar-accent/50">
+                        <span className="text-sm text-sidebar-foreground/80">Length of Stay Reduction</span>
+                        <span className="font-semibold text-sidebar-foreground">
+                          {formatNaira(roiCalculations.losSavings)}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between p-4 rounded-lg bg-sidebar-accent/50">
+                        <span className="text-sm text-sidebar-foreground/80">Readmission Prevention</span>
+                        <span className="font-semibold text-sidebar-foreground">
+                          {formatNaira(roiCalculations.readmissionSavings)}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between p-4 rounded-lg bg-sidebar-accent/50">
+                        <span className="text-sm text-sidebar-foreground/80">Staff Efficiency Gains</span>
+                        <span className="font-semibold text-sidebar-foreground">
+                          {formatNaira(roiCalculations.staffSavings)}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="border-t border-sidebar-border pt-6 mb-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="text-sidebar-foreground/80">Total Annual Savings</span>
+                        <span className="text-2xl font-bold text-primary">
+                          {formatNaira(roiCalculations.totalAnnualSavings)}
+                        </span>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="text-center p-3 rounded-lg bg-primary/10">
+                          <div className="text-2xl font-bold text-primary">
+                            {roiCalculations.roi.toFixed(0)}%
+                          </div>
+                          <div className="text-xs text-sidebar-foreground/70">ROI</div>
+                        </div>
+                        <div className="text-center p-3 rounded-lg bg-primary/10">
+                          <div className="text-2xl font-bold text-primary">
+                            {roiCalculations.paybackMonths.toFixed(1)}
+                          </div>
+                          <div className="text-xs text-sidebar-foreground/70">Months to Payback</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-sidebar-accent/30 rounded-lg p-4 mb-6">
+                      <div className="flex items-center gap-2 mb-2">
+                        <DollarSign className="h-4 w-4 text-primary" />
+                        <span className="text-sm font-medium text-sidebar-foreground">
+                          Recommended Plan
+                        </span>
+                      </div>
+                      <p className="text-lg font-bold text-primary">
+                        {roiCalculations.recommendedPlan}
+                      </p>
+                      <p className="text-xs text-sidebar-foreground/70 mt-1">
+                        Based on your patient volume
+                      </p>
+                    </div>
+
+                    <Link to="/login?signup=true">
+                      <Button className="w-full" size="lg">
+                        Start Saving Today
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </CardContent>
             </Card>
           </motion.div>
         </div>
