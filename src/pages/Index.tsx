@@ -103,7 +103,7 @@ const Index = () => {
                   </a>
                   <Link to="/login?signup=true">
                     <Button size="sm" className="font-semibold shadow-lg shadow-primary/30">
-                      Sign Up Free
+                      Sign Up Now Free
                       <ArrowRight className="ml-1.5 h-4 w-4" />
                     </Button>
                   </Link>
