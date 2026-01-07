@@ -87,7 +87,7 @@ const Index = () => {
                     className="h-8 w-auto object-contain"
                   />
                   <span className="hidden sm:block text-sm text-sidebar-foreground/80">
-                    Clinical intelligence you can act on
+                    Smarter decisions. Better outcomes. Lower costs.
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
@@ -103,7 +103,7 @@ const Index = () => {
                   </a>
                   <Link to="/login?signup=true">
                     <Button size="sm" className="font-semibold shadow-lg shadow-primary/30">
-                      Sign Up Now Free
+                      Sign Up
                       <ArrowRight className="ml-1.5 h-4 w-4" />
                     </Button>
                   </Link>
@@ -152,17 +152,17 @@ const Index = () => {
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
               <span className="text-lg">🇳🇬</span>
-              Purpose-Built for Nigerian Healthcare
+              Built for Nigerian Mid-Sized Hospitals & Clinics
             </div>
             
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight tracking-tight mb-6">
-              Clinical Intelligence
+              Smarter Decisions.
               <br />
-              <span className="text-primary">You Can Act On.</span>
+              <span className="text-primary">Better Outcomes.</span>
             </h1>
             
             <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed mb-8 max-w-2xl">
-              MedSight Analytics turns your existing hospital data into clear, actionable insights. Reduce administrative burden by 40%, identify high-risk patients before complications arise, and eliminate avoidable costs—powered by explainable AI that integrates with your current systems.
+              MedSight Analytics transforms your existing patient data into clear, actionable intelligence. Reduce admin workload, flag high-risk patients early, improve clinical decision-making, and cut avoidable costs—all with explainable AI that works with your current systems.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
@@ -188,15 +188,15 @@ const Index = () => {
           <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 text-center">
             <div className="flex items-center gap-3">
               <Shield className="h-6 w-6 text-success" />
-              <span className="text-sm font-medium text-muted-foreground">HIPAA-Aligned Security Standards</span>
+              <span className="text-sm font-medium text-muted-foreground">HIPAA-Aligned & Compliance-Focused</span>
             </div>
             <div className="flex items-center gap-3">
               <Zap className="h-6 w-6 text-primary" />
-              <span className="text-sm font-medium text-muted-foreground">Seamless EMR Integration</span>
+              <span className="text-sm font-medium text-muted-foreground">Integrates With Your Existing Systems</span>
             </div>
             <div className="flex items-center gap-3">
               <Activity className="h-6 w-6 text-warning" />
-              <span className="text-sm font-medium text-muted-foreground">Operational in 72 Hours</span>
+              <span className="text-sm font-medium text-muted-foreground">See Value Within 72 Hours</span>
             </div>
           </div>
         </div>
@@ -207,10 +207,10 @@ const Index = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight mb-4">
-              Measurable Impact From Day One
+              Fast Time to Value
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Built specifically for Nigerian hospitals and clinics. No infrastructure overhaul required—MedSight works with the data you already collect to deliver immediate, quantifiable results.
+              Purpose-built for Nigerian mid-sized hospitals and clinics. No infrastructure overhaul required—MedSight works with the data you already collect to deliver measurable results within days, not months.
             </p>
           </div>
           
@@ -219,9 +219,9 @@ const Index = () => {
               <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                 <TrendingDown className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">40% Less Admin Work</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Reduce Admin Workload</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Automated data analysis eliminates manual reporting. Clinical staff reclaim hours each week for direct patient care.
+                Automated analysis replaces manual data gathering and reporting. Your staff spends less time on paperwork, more time with patients.
               </p>
             </div>
             
@@ -229,9 +229,9 @@ const Index = () => {
               <div className="h-12 w-12 rounded-xl bg-destructive/10 flex items-center justify-center mb-4 group-hover:bg-destructive/20 transition-colors">
                 <Activity className="h-6 w-6 text-destructive" />
               </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">Early Risk Detection</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Flag High-Risk Patients Early</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                AI-powered alerts identify deteriorating patients and readmission risks 24-48 hours earlier than traditional methods.
+                Identify patients at risk of deterioration or readmission before complications occur. Early intervention saves lives and resources.
               </p>
             </div>
             
@@ -239,9 +239,9 @@ const Index = () => {
               <div className="h-12 w-12 rounded-xl bg-success/10 flex items-center justify-center mb-4 group-hover:bg-success/20 transition-colors">
                 <Zap className="h-6 w-6 text-success" />
               </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">Confident Decisions</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Improve Decision-Making</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Evidence-based recommendations with full transparency. Every AI insight explains its reasoning so clinicians stay in control.
+                Explainable AI provides clear, evidence-based recommendations. Every insight shows its reasoning so clinicians remain in control.
               </p>
             </div>
             
@@ -249,9 +249,9 @@ const Index = () => {
               <div className="h-12 w-12 rounded-xl bg-warning/10 flex items-center justify-center mb-4 group-hover:bg-warning/20 transition-colors">
                 <Shield className="h-6 w-6 text-warning" />
               </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">Recover Lost Revenue</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Cut Avoidable Costs</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Pinpoint operational inefficiencies and resource leakage. Hospitals typically recover 15-25% in avoidable costs within 90 days.
+                Surface operational inefficiencies and resource waste. Most hospitals see measurable cost reductions within the first 90 days.
               </p>
             </div>
           </div>
@@ -263,10 +263,10 @@ const Index = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight mb-4">
-              From Setup to Insights in 72 Hours
+              Works With Your Existing Systems
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              No lengthy implementations. No IT overhauls. MedSight connects to your existing systems and starts delivering value within days, not months.
+              No lengthy implementations. No IT overhauls. MedSight integrates with your current EMR and hospital systems, delivering actionable insights within 72 hours.
             </p>
           </div>
           
@@ -275,9 +275,9 @@ const Index = () => {
               <div className="h-14 w-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold mx-auto mb-4">
                 1
               </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">Secure Connection</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Secure Integration</h3>
               <p className="text-muted-foreground text-sm">
-                Connect your EMR, HMS, or clinical databases through our encrypted integration layer. No data migration required.
+                Connect your EMR, HMS, or clinical databases through our encrypted integration layer. Your data stays in your control—no migration required.
               </p>
             </div>
             
@@ -285,9 +285,9 @@ const Index = () => {
               <div className="h-14 w-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold mx-auto mb-4">
                 2
               </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">Intelligent Analysis</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Explainable AI Analysis</h3>
               <p className="text-muted-foreground text-sm">
-                Our AI continuously analyzes patient and operational data, surfacing patterns human review would miss.
+                Our AI continuously analyzes patient and operational data, surfacing patterns and risks with clear explanations for every recommendation.
               </p>
             </div>
             
@@ -295,9 +295,9 @@ const Index = () => {
               <div className="h-14 w-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold mx-auto mb-4">
                 3
               </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">Actionable Alerts</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Immediate Value</h3>
               <p className="text-muted-foreground text-sm">
-                Receive clear, prioritized recommendations through dashboards designed for busy clinical environments.
+                Receive clear, prioritized alerts and recommendations through dashboards designed for busy clinical teams.
               </p>
             </div>
           </div>
@@ -668,10 +668,10 @@ const Index = () => {
               </div>
               <div className="flex-1">
                 <h2 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight mb-4">
-                  Healthcare-Grade Security, Built In
+                  HIPAA-Aligned. Compliance-Focused.
                 </h2>
                 <p className="text-muted-foreground leading-relaxed mb-6">
-                  Patient data demands the highest protection. MedSight Analytics implements HIPAA-aligned security controls throughout every layer—encryption, access management, and comprehensive audit trails. Your data never leaves your control.
+                  Patient data demands the highest protection. MedSight Analytics implements HIPAA-aligned security controls at every layer—encryption, access management, and complete audit trails. Your data stays under your control, always.
                 </p>
                 <ul className="grid sm:grid-cols-2 gap-3">
                   <li className="flex items-center gap-2 text-sm text-foreground">

@@ -125,26 +125,26 @@ export default function LoginPage() {
           />
           <h1 className="text-4xl font-bold text-sidebar-foreground leading-tight tracking-tight">
             {isSignUp ? (
-              <>Clinical Intelligence<br />That Drives Results</>
+              <>Smarter Decisions.<br />Better Outcomes.</>
             ) : (
-              <>Your Insights<br />Await</>
+              <>Welcome Back.<br />Your Insights Await.</>
             )}
           </h1>
           <p className="text-lg text-sidebar-foreground/80 leading-relaxed max-w-md">
             {isSignUp 
-              ? 'Join Nigerian healthcare leaders using explainable AI to reduce admin workload by 40%, flag high-risk patients earlier, and cut avoidable costs.'
-              : 'Continue leveraging data-driven insights to improve patient outcomes and operational efficiency.'
+              ? 'Join Nigerian hospitals using explainable AI to reduce admin workload, flag high-risk patients early, and cut avoidable costs—all with HIPAA-aligned data handling.'
+              : 'Continue using data-driven insights to improve patient outcomes and operational efficiency.'
             }
           </p>
           <div className="flex flex-wrap gap-3">
             <span className="px-4 py-2 rounded-full bg-sidebar-accent/80 text-sidebar-accent-foreground text-sm font-medium backdrop-blur-sm">
-              Early Risk Detection
+              Fast Time to Value
             </span>
             <span className="px-4 py-2 rounded-full bg-sidebar-accent/80 text-sidebar-accent-foreground text-sm font-medium backdrop-blur-sm">
-              Explainable AI
+              System Integration
             </span>
             <span className="px-4 py-2 rounded-full bg-sidebar-accent/80 text-sidebar-accent-foreground text-sm font-medium backdrop-blur-sm">
-              72-Hour Setup
+              Compliance-Focused
             </span>
           </div>
         </div>
@@ -154,10 +154,10 @@ export default function LoginPage() {
             <div className="h-8 w-8 rounded-full bg-success/20 flex items-center justify-center">
               <Shield className="h-4 w-4 text-success" />
             </div>
-            <span className="font-medium">HIPAA-Aligned Security Standards</span>
+            <span className="font-medium">HIPAA-Aligned Data Handling</span>
           </div>
           <p className="text-xs text-sidebar-foreground/50 pl-11">
-            AES-256 encryption, role-based access control, and complete audit trails. Your data stays in your control.
+            AES-256 encryption, role-based access control, complete audit trails. Your patient data remains secure and under your control.
           </p>
         </div>
       </div>
@@ -185,14 +185,14 @@ export default function LoginPage() {
 
           <div className="text-center lg:text-left">
             <h2 className="text-3xl font-bold text-foreground tracking-tight">
-              {isDemo ? 'Explore the Platform' : (isSignUp ? 'Get Started Today' : 'Welcome Back')}
+              {isDemo ? 'Explore the Platform' : (isSignUp ? 'Create Your Account' : 'Sign In')}
             </h2>
             <p className="text-muted-foreground mt-2 text-base">
               {isDemo
-                ? 'Create an account to experience MedSight Analytics with real sample data.'
+                ? 'Experience MedSight Analytics with real sample data. No commitment required.'
                 : (isSignUp 
-                  ? 'Create your account to start transforming patient data into actionable insights.' 
-                  : "Access your hospital's analytics dashboard and continue improving outcomes.")}
+                  ? 'Start transforming your hospital data into actionable insights. Setup takes minutes.' 
+                  : "Access your analytics dashboard and continue improving patient outcomes.")}
             </p>
           </div>
 
@@ -283,7 +283,7 @@ export default function LoginPage() {
               {isLoading 
                 ? (isSignUp ? 'Creating account...' : 'Signing in...') 
                 : (isDemo 
-                  ? (isSignUp ? 'Create Account & Try Demo' : 'Sign In & Try Demo')
+                  ? (isSignUp ? 'Sign Up & Try Demo' : 'Sign In & Try Demo')
                   : (isSignUp ? 'Sign Up' : 'Sign In'))}
             </Button>
           </form>
