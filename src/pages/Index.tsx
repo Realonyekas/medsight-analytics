@@ -156,9 +156,9 @@ const Index = () => {
             </div>
             
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight tracking-tight mb-6">
-              Smarter Decisions.
+              The Best Health Data Tools
               <br />
-              <span className="text-primary">Better Outcomes.</span>
+              <span className="text-primary">For Hospitals</span>
             </h1>
             
             <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed mb-8 max-w-2xl">
