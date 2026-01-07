@@ -109,17 +109,28 @@ export default function SetupPage() {
     try {
       const { data, error } = await supabase.functions.invoke('link-demo-hospital');
       
-      if (error) throw error;
+      if (error) {
+        console.error('Edge function error:', error);
+        throw new Error(error.message || 'Failed to connect to demo hospital');
+      }
       
       if (data?.success) {
         toast.success('Joined demo hospital successfully!');
+        window.location.href = '/dashboard';
+      } else if (data?.error === 'User already belongs to a hospital') {
+        // User already has a hospital - redirect to dashboard
+        toast.info('You are already connected to a hospital. Redirecting...');
+        window.location.href = '/dashboard';
+      } else if (data?.error === 'User already has assigned roles') {
+        // User has roles but maybe no hospital - redirect to dashboard
+        toast.info('Your account is already set up. Redirecting...');
         window.location.href = '/dashboard';
       } else {
         throw new Error(data?.error || 'Failed to join demo hospital');
       }
     } catch (error: any) {
       console.error('Join demo error:', error);
-      toast.error(error.message || 'Failed to join demo hospital');
+      toast.error(error.message || 'Failed to join demo hospital. Please try again.');
     } finally {
       setIsJoiningDemo(false);
     }
