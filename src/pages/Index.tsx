@@ -156,7 +156,7 @@ const Index = () => {
             </div>
             
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight tracking-tight mb-6">
-              The Best Health Data Tools
+              The Best Data Tool
               <br />
               <span className="text-primary">For Hospitals</span>
             </h1>
