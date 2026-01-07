@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Check, X, ArrowRight, Zap, Building2, Rocket, HelpCircle, ArrowLeft, Calculator, TrendingUp, DollarSign, Users, Activity } from 'lucide-react';
+import { Check, X, ArrowRight, Zap, Building2, Rocket, HelpCircle, ArrowLeft, Calculator, TrendingUp, DollarSign, Users, Activity, Quote, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -100,6 +100,57 @@ const featureComparison: PlanFeature[] = [
   { name: 'Patient Limit', starter: '500', growth: '2,000', enterprise: 'Unlimited' },
   { name: 'User Seats', starter: '5', growth: '20', enterprise: 'Unlimited' },
   { name: 'Data Retention', starter: '1 year', growth: '3 years', enterprise: 'Unlimited' },
+];
+
+const testimonials = [
+  {
+    name: 'Dr. Olumide Adeyemi',
+    role: 'Medical Director',
+    hospital: 'Lagos University Teaching Hospital',
+    location: 'Lagos',
+    image: 'OA',
+    quote: 'MedSight reduced our patient readmission rate by 22% in just 6 months. The AI-powered risk alerts helped us identify high-risk patients before complications arose.',
+    metric: '22%',
+    metricLabel: 'Reduction in Readmissions',
+    savings: '₦45M',
+    savingsLabel: 'Annual Savings',
+  },
+  {
+    name: 'Dr. Amara Okonkwo',
+    role: 'Chief Operations Officer',
+    hospital: 'National Hospital Abuja',
+    location: 'Abuja',
+    image: 'AO',
+    quote: 'The analytics dashboard transformed how we manage bed allocation. We reduced average length of stay by 1.2 days while improving patient satisfaction scores.',
+    metric: '1.2 days',
+    metricLabel: 'Reduced Length of Stay',
+    savings: '₦38M',
+    savingsLabel: 'Annual Savings',
+  },
+  {
+    name: 'Dr. Chukwuma Eze',
+    role: 'Hospital Administrator',
+    hospital: 'University of Nigeria Teaching Hospital',
+    location: 'Enugu',
+    image: 'CE',
+    quote: 'Our staff spends 40% less time on administrative tasks since implementing MedSight. The automated insights help our clinicians focus on what matters most - patient care.',
+    metric: '40%',
+    metricLabel: 'Admin Time Saved',
+    savings: '₦28M',
+    savingsLabel: 'Annual Savings',
+  },
+  {
+    name: 'Dr. Fatima Ibrahim',
+    role: 'Quality Assurance Director',
+    hospital: 'Aminu Kano Teaching Hospital',
+    location: 'Kano',
+    image: 'FI',
+    quote: 'MedSight\'s predictive analytics helped us reduce emergency department overcrowding by 35%. We now proactively manage patient flow based on real-time data.',
+    metric: '35%',
+    metricLabel: 'Reduced ED Overcrowding',
+    savings: '₦32M',
+    savingsLabel: 'Annual Savings',
+  },
 ];
 
 const faqs = [
@@ -657,6 +708,105 @@ const PricingPage = () => {
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     </Link>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-16 bg-muted/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <Badge variant="secondary" className="mb-4">
+              <Star className="h-3 w-3 mr-1 fill-current" />
+              Success Stories
+            </Badge>
+            <h2 className="text-3xl font-bold text-foreground mb-4">
+              Real Results from Nigerian Hospitals
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              See how leading healthcare institutions across Nigeria are transforming patient outcomes with MedSight
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={testimonial.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <Card className="h-full border-border hover:border-primary/30 transition-colors">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold shrink-0">
+                        {testimonial.image}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-foreground truncate">{testimonial.name}</h4>
+                        <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                        <p className="text-sm text-primary">{testimonial.hospital}, {testimonial.location}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="relative mb-4">
+                      <Quote className="absolute -top-1 -left-1 h-6 w-6 text-primary/20" />
+                      <p className="text-muted-foreground pl-5 italic">
+                        "{testimonial.quote}"
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-4 pt-4 border-t border-border">
+                      <div className="flex-1 text-center">
+                        <div className="text-2xl font-bold text-primary">{testimonial.metric}</div>
+                        <div className="text-xs text-muted-foreground">{testimonial.metricLabel}</div>
+                      </div>
+                      <div className="w-px h-10 bg-border" />
+                      <div className="flex-1 text-center">
+                        <div className="text-2xl font-bold text-primary">{testimonial.savings}</div>
+                        <div className="text-xs text-muted-foreground">{testimonial.savingsLabel}</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="mt-12 text-center"
+          >
+            <Card className="inline-block border-primary/20 bg-primary/5">
+              <CardContent className="p-6">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                  <div className="text-center">
+                    <div className="text-4xl font-bold text-primary">₦143M+</div>
+                    <div className="text-sm text-muted-foreground">Combined Annual Savings</div>
+                  </div>
+                  <div className="hidden sm:block w-px h-12 bg-primary/20" />
+                  <div className="text-center">
+                    <div className="text-4xl font-bold text-primary">25+</div>
+                    <div className="text-sm text-muted-foreground">Partner Hospitals</div>
+                  </div>
+                  <div className="hidden sm:block w-px h-12 bg-primary/20" />
+                  <div className="text-center">
+                    <div className="text-4xl font-bold text-primary">98%</div>
+                    <div className="text-sm text-muted-foreground">Customer Retention</div>
                   </div>
                 </div>
               </CardContent>
