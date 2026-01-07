@@ -152,7 +152,7 @@ const Index = () => {
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
               <span className="text-lg">🇳🇬</span>
-              Built for Nigerian Mid-Sized Hospitals & Clinics
+              Built for Nigerian Hospitals & Clinics
             </div>
             
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight tracking-tight mb-6">
