@@ -21,6 +21,7 @@ import {
   mockCostTrendData,
   subscriptionPlans 
 } from '@/data/mockData';
+import { ScheduleCard, mockScheduleData } from '@/components/dashboard/ScheduleCard';
 import medsightLogo from '@/assets/medsight-logo.jpg';
 
 type PlanTier = 'starter' | 'growth' | 'enterprise';
@@ -243,6 +244,9 @@ export default function DemoDashboardPage() {
               ))}
             </div>
           </section>
+
+          {/* Staff Schedule */}
+          <ScheduleCard entries={mockScheduleData} />
 
           {/* High-Risk Patients */}
           <section className="rounded-xl border border-border bg-card overflow-hidden">
