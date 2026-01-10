@@ -166,11 +166,12 @@ const Index = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <a href="#value">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto text-base font-semibold px-8 h-12">
-                  See the Value
+              <Link to="/demo-dashboard">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto text-base font-semibold px-8 h-12 gap-2">
+                  <Play className="h-5 w-5" />
+                  View Dashboard
                 </Button>
-              </a>
+              </Link>
               <Link to="/login?signup=true">
                 <Button size="lg" className="w-full sm:w-auto text-base font-semibold px-8 h-12 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all">
                   Sign Up
