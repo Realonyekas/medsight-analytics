@@ -519,7 +519,7 @@ export type Database = {
       insight_category: "clinical" | "operational" | "financial" | "quality"
       insight_type: "alert" | "trend" | "recommendation" | "prediction"
       risk_level: "low" | "medium" | "high" | "critical"
-      subscription_plan: "starter" | "growth" | "enterprise"
+      subscription_plan: "starter" | "growth" | "enterprise" | "master"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -651,7 +651,7 @@ export const Constants = {
       insight_category: ["clinical", "operational", "financial", "quality"],
       insight_type: ["alert", "trend", "recommendation", "prediction"],
       risk_level: ["low", "medium", "high", "critical"],
-      subscription_plan: ["starter", "growth", "enterprise"],
+      subscription_plan: ["starter", "growth", "enterprise", "master"],
     },
   },
 } as const
