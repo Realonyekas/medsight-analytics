@@ -66,8 +66,7 @@ serve(async (req) => {
     if (existingProfile?.hospital_id) {
       console.warn(`User ${user.id} already has hospital ${existingProfile.hospital_id}`);
       return new Response(JSON.stringify({ 
-        error: 'User already belongs to a hospital',
-        hospital_id: existingProfile.hospital_id 
+        error: 'User already belongs to a hospital'
       }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -91,8 +90,7 @@ serve(async (req) => {
     if (existingRoles && existingRoles.length > 0) {
       console.warn(`User ${user.id} already has roles: ${existingRoles.map(r => r.role).join(', ')}`);
       return new Response(JSON.stringify({ 
-        error: 'User already has assigned roles',
-        roles: existingRoles.map(r => r.role)
+        error: 'User already has assigned roles'
       }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -138,15 +136,13 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ 
       success: true, 
-      message: 'Linked to demo hospital',
-      hospital_id: DEMO_HOSPITAL_ID 
+      message: 'Linked to demo hospital'
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
     console.error('Unexpected error:', error);
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    return new Response(JSON.stringify({ error: message }), {
+    return new Response(JSON.stringify({ error: 'An unexpected error occurred' }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

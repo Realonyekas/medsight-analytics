@@ -13,6 +13,22 @@ serve(async (req) => {
   }
 
   try {
+    // Verify authorization - only allow service role or cron secret
+    const authHeader = req.headers.get("Authorization");
+    const cronSecret = Deno.env.get("CRON_SECRET");
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    
+    const isAuthorized = 
+      authHeader?.includes(serviceRoleKey || "INVALID") ||
+      authHeader === `Bearer ${cronSecret}`;
+    
+    if (!isAuthorized) {
+      console.error("Unauthorized cron attempt");
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
     if (!resendApiKey) {
       console.error("RESEND_API_KEY not configured");
@@ -142,7 +158,6 @@ serve(async (req) => {
       JSON.stringify({
         success: true,
         processed: expiringSubscriptions?.length || 0,
-        results: emailResults,
       }),
       {
         status: 200,
@@ -152,7 +167,7 @@ serve(async (req) => {
   } catch (error: any) {
     console.error("Subscription reminder error:", error);
     return new Response(
-      JSON.stringify({ success: false, error: error.message }),
+      JSON.stringify({ success: false, error: "Failed to process reminders" }),
       {
         status: 400,
         headers: { "Content-Type": "application/json", ...corsHeaders },
