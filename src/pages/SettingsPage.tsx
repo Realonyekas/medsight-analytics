@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Shield, Building2, CreditCard, Check, Loader2, Receipt } from 'lucide-react';
+import { Shield, Building2, CreditCard, Check, Loader2, Receipt, KeyRound, Crown } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription, useDepartments } from '@/hooks/useHospitalData';
@@ -11,16 +11,23 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { PaymentHistory } from '@/components/settings/PaymentHistory';
 import { SubscriptionExpiryAlert } from '@/components/settings/SubscriptionExpiryAlert';
 import { cn } from '@/lib/utils';
+import { Input } from '@/components/ui/input';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 export default function SettingsPage() {
-  const { hospital, user } = useAuth();
+  const { hospital, user, session } = useAuth();
   const { data: subscription, isLoading: subLoading, refetch } = useSubscription(hospital?.id);
   const { data: departments, isLoading: deptLoading } = useDepartments(hospital?.id);
   const { initializePayment, verifyPayment, isLoading: paymentLoading } = usePaystack();
   const [searchParams, setSearchParams] = useSearchParams();
   const subscriptionRef = useRef<HTMLDivElement>(null);
+  const [masterPassword, setMasterPassword] = useState('');
+  const [unlocking, setUnlocking] = useState(false);
+  const [showMasterInput, setShowMasterInput] = useState(false);
 
   const isLoading = subLoading || deptLoading;
+  const isMasterPlan = (subscription?.plan as string) === 'master';
 
   // Handle payment callback
   useEffect(() => {
@@ -48,6 +55,31 @@ export default function SettingsPage() {
 
   const scrollToPlans = () => {
     subscriptionRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleUnlockMaster = async () => {
+    if (!masterPassword || !session?.access_token) return;
+    
+    setUnlocking(true);
+    try {
+      const response = await supabase.functions.invoke('unlock-master-plan', {
+        body: { password: masterPassword },
+      });
+
+      if (response.error) {
+        toast.error('Invalid password or unlock failed');
+        return;
+      }
+
+      toast.success('Master plan unlocked! Full analytics access granted.');
+      setMasterPassword('');
+      setShowMasterInput(false);
+      refetch();
+    } catch (error) {
+      toast.error('Failed to unlock master plan');
+    } finally {
+      setUnlocking(false);
+    }
   };
 
   const formatNairaPrice = (usdPrice: number) => {
@@ -112,62 +144,114 @@ export default function SettingsPage() {
           )}
         </section>
 
+        {/* Master Plan Badge - shown when active */}
+        {isMasterPlan && (
+          <section className="card-healthcare bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border-amber-500/50">
+            <div className="flex items-center gap-3">
+              <Crown className="h-6 w-6 text-amber-500" />
+              <div>
+                <h2 className="text-lg font-bold text-amber-600">Master Plan Active</h2>
+                <p className="text-sm text-muted-foreground">Full unlimited access to all MedSight Analytics features</p>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Subscription Plans */}
-        <section ref={subscriptionRef} className="card-healthcare">
-          <div className="flex items-center gap-3 mb-4">
-            <CreditCard className="h-5 w-5 text-primary" />
-            <h2 className="section-title">Subscription Plans</h2>
-          </div>
-          <p className="text-sm text-muted-foreground mb-4">
-            Pay securely with Paystack - supports cards, bank transfers, and USSD
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {subscriptionPlans.map((plan) => {
-              const isCurrentPlan = subscription?.plan === plan.tier;
-              
-              return (
-                <div key={plan.tier} className={cn(
-                  'p-5 rounded-lg border-2 transition-all',
-                  isCurrentPlan ? 'border-primary bg-accent/30' : 'border-border hover:border-primary/50'
-                )}>
-                  <h3 className="font-semibold text-lg">{plan.name}</h3>
-                  <div className="mt-2">
-                    <p className="text-2xl font-bold">
-                      {formatNairaPrice(plan.price)}
-                      <span className="text-sm text-muted-foreground font-normal">/mo</span>
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      (${plan.price} USD)
-                    </p>
+        {!isMasterPlan && (
+          <section ref={subscriptionRef} className="card-healthcare">
+            <div className="flex items-center gap-3 mb-4">
+              <CreditCard className="h-5 w-5 text-primary" />
+              <h2 className="section-title">Subscription Plans</h2>
+            </div>
+            <p className="text-sm text-muted-foreground mb-4">
+              Pay securely with Paystack - supports cards, bank transfers, and USSD
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {subscriptionPlans.map((plan) => {
+                const isCurrentPlan = subscription?.plan === plan.tier;
+                
+                return (
+                  <div key={plan.tier} className={cn(
+                    'p-5 rounded-lg border-2 transition-all',
+                    isCurrentPlan ? 'border-primary bg-accent/30' : 'border-border hover:border-primary/50'
+                  )}>
+                    <h3 className="font-semibold text-lg">{plan.name}</h3>
+                    <div className="mt-2">
+                      <p className="text-2xl font-bold">
+                        {formatNairaPrice(plan.price)}
+                        <span className="text-sm text-muted-foreground font-normal">/mo</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        (${plan.price} USD)
+                      </p>
+                    </div>
+                    <ul className="mt-4 space-y-2">
+                      {plan.features.slice(0, 4).map((feature, i) => (
+                        <li key={i} className="flex items-center gap-2 text-sm">
+                          <Check className="h-4 w-4 text-success flex-shrink-0" />{feature}
+                        </li>
+                      ))}
+                    </ul>
+                    <Button 
+                      variant={isCurrentPlan ? "secondary" : "default"} 
+                      className="w-full mt-4"
+                      disabled={isCurrentPlan || paymentLoading}
+                      onClick={() => !isCurrentPlan && handleUpgrade(plan.tier)}
+                    >
+                      {paymentLoading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Processing...
+                        </>
+                      ) : isCurrentPlan ? (
+                        'Current Plan'
+                      ) : (
+                        `Upgrade to ${plan.name}`
+                      )}
+                    </Button>
                   </div>
-                  <ul className="mt-4 space-y-2">
-                    {plan.features.slice(0, 4).map((feature, i) => (
-                      <li key={i} className="flex items-center gap-2 text-sm">
-                        <Check className="h-4 w-4 text-success flex-shrink-0" />{feature}
-                      </li>
-                    ))}
-                  </ul>
-                  <Button 
-                    variant={isCurrentPlan ? "secondary" : "default"} 
-                    className="w-full mt-4"
-                    disabled={isCurrentPlan || paymentLoading}
-                    onClick={() => !isCurrentPlan && handleUpgrade(plan.tier)}
-                  >
-                    {paymentLoading ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Processing...
-                      </>
-                    ) : isCurrentPlan ? (
-                      'Current Plan'
-                    ) : (
-                      `Upgrade to ${plan.name}`
-                    )}
-                  </Button>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {/* Hidden Master Plan Unlock */}
+        <section className="card-healthcare border-dashed border-muted-foreground/30">
+          <div 
+            className="flex items-center gap-3 cursor-pointer" 
+            onClick={() => setShowMasterInput(!showMasterInput)}
+          >
+            <KeyRound className="h-5 w-5 text-muted-foreground" />
+            <h2 className="section-title text-muted-foreground">Admin Access</h2>
           </div>
+          {showMasterInput && (
+            <div className="mt-4 flex gap-2">
+              <Input
+                type="password"
+                placeholder="Enter master password"
+                value={masterPassword}
+                onChange={(e) => setMasterPassword(e.target.value)}
+                className="max-w-xs"
+                onKeyDown={(e) => e.key === 'Enter' && handleUnlockMaster()}
+              />
+              <Button 
+                onClick={handleUnlockMaster} 
+                disabled={unlocking || !masterPassword}
+                variant="outline"
+              >
+                {unlocking ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Unlocking...
+                  </>
+                ) : (
+                  'Unlock'
+                )}
+              </Button>
+            </div>
+          )}
         </section>
 
         {/* Payment History */}
