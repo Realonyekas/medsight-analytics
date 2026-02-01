@@ -126,15 +126,15 @@ const handler = async (req: Request): Promise<Response> => {
         "Content-Type": "application/json",
       };
 
-      // Send internal notification
+      // Send internal notification to personal email
       try {
         await fetch(resendUrl, {
           method: "POST",
           headers,
           body: JSON.stringify({
             from: "MedSight Analytics <onboarding@resend.dev>",
-            to: ["sales@medsight.ng"],
-            subject: `New Demo Request from ${sanitizedHospital}`,
+            to: ["onwumastanley24@gmail.com"],
+            subject: `🏥 New Demo Request from ${sanitizedHospital}`,
             html: `
               <h2>New Demo Request</h2>
               <p><strong>Name:</strong> ${sanitizedName}</p>
@@ -147,9 +147,35 @@ const handler = async (req: Request): Promise<Response> => {
             `,
           }),
         });
-        console.log("Internal notification email sent");
+        console.log("Internal notification email sent to personal email");
       } catch (emailError) {
         console.error("Failed to send internal notification:", emailError);
+      }
+
+      // Send WhatsApp notification via CallMeBot API
+      const whatsappNumber = "2347030788968";
+      const whatsappMessage = encodeURIComponent(
+        `🏥 *New Demo Request*\n\n` +
+        `*Name:* ${sanitizedName}\n` +
+        `*Email:* ${sanitizedEmail}\n` +
+        `*Phone:* ${sanitizedPhone || "Not provided"}\n` +
+        `*Hospital:* ${sanitizedHospital}\n` +
+        `*Message:* ${sanitizedMessage || "No message"}\n\n` +
+        `_Submitted: ${new Date().toLocaleString()}_`
+      );
+      
+      // Using WhatsApp Business API through CallMeBot (free service)
+      const callMeBotApiKey = Deno.env.get("CALLMEBOT_API_KEY");
+      if (callMeBotApiKey) {
+        try {
+          const whatsappUrl = `https://api.callmebot.com/whatsapp.php?phone=${whatsappNumber}&text=${whatsappMessage}&apikey=${callMeBotApiKey}`;
+          await fetch(whatsappUrl);
+          console.log("WhatsApp notification sent");
+        } catch (whatsappError) {
+          console.error("Failed to send WhatsApp notification:", whatsappError);
+        }
+      } else {
+        console.warn("CALLMEBOT_API_KEY not configured, skipping WhatsApp notification");
       }
 
       // Send confirmation to requester
