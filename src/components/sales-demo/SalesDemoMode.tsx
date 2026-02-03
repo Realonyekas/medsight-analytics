@@ -17,6 +17,7 @@ import { Scene3MoneyLeak } from './Scene3MoneyLeak';
 import { Scene4CommandNetwork } from './Scene4CommandNetwork';
 import { Scene5Ownership } from './Scene5Ownership';
 import { Scene6Decision } from './Scene6Decision';
+import { useDemoNarration } from '@/hooks/useDemoNarration';
 
 interface SalesDemoModeProps {
   onExit?: () => void;
@@ -39,10 +40,18 @@ export function SalesDemoMode({ onExit, initialSize = 'general' }: SalesDemoMode
   const [currentScene, setCurrentScene] = useState(1);
   const [hospitalSize, setHospitalSize] = useState<HospitalSize>(initialSize);
   const [voiceoverEnabled, setVoiceoverEnabled] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showOverlay, setShowOverlay] = useState(true);
   const [showChaos, setShowChaos] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+
+  // Initialize narration and sound design
+  const { isSpeaking, stopNarration, replayNarration, playSceneSound } = useDemoNarration(
+    currentScene,
+    voiceoverEnabled,
+    soundEnabled
+  );
 
   // Generate demo data based on hospital size
   const config = getHospitalConfig(hospitalSize);
@@ -89,12 +98,13 @@ export function SalesDemoMode({ onExit, initialSize = 'general' }: SalesDemoMode
   }, []);
 
   const handleExit = useCallback(() => {
+    stopNarration();
     if (onExit) {
       onExit();
     } else {
       navigate('/');
     }
-  }, [onExit, navigate]);
+  }, [onExit, navigate, stopNarration]);
 
   const handleToggleFullscreen = useCallback(() => {
     if (!document.fullscreenElement) {
@@ -216,12 +226,16 @@ export function SalesDemoMode({ onExit, initialSize = 'general' }: SalesDemoMode
         totalScenes={6}
         hospitalSize={hospitalSize}
         voiceoverEnabled={voiceoverEnabled}
+        soundEnabled={soundEnabled}
+        isSpeaking={isSpeaking}
         isFullscreen={isFullscreen}
         onPrevious={handlePrevious}
         onNext={handleNext}
         onSkip={handleSkip}
         onReplay={handleReplay}
         onToggleVoiceover={() => setVoiceoverEnabled(!voiceoverEnabled)}
+        onToggleSound={() => setSoundEnabled(!soundEnabled)}
+        onReplayNarration={replayNarration}
         onToggleFullscreen={handleToggleFullscreen}
         onChangeHospitalSize={setHospitalSize}
         onExit={handleExit}
