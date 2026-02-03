@@ -10,7 +10,10 @@ import {
   Minimize,
   ChevronLeft,
   ChevronRight,
-  X
+  X,
+  Mic,
+  MicOff,
+  RefreshCw
 } from 'lucide-react';
 import { HospitalSize } from '@/lib/demoDataGenerator';
 import {
@@ -20,18 +23,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface DemoControlsProps {
   currentScene: number;
   totalScenes: number;
   hospitalSize: HospitalSize;
   voiceoverEnabled: boolean;
+  soundEnabled: boolean;
+  isSpeaking: boolean;
   isFullscreen: boolean;
   onPrevious: () => void;
   onNext: () => void;
   onSkip: () => void;
   onReplay: () => void;
   onToggleVoiceover: () => void;
+  onToggleSound: () => void;
+  onReplayNarration: () => void;
   onToggleFullscreen: () => void;
   onChangeHospitalSize: (size: HospitalSize) => void;
   onExit: () => void;
@@ -42,23 +55,28 @@ export function DemoControls({
   totalScenes,
   hospitalSize,
   voiceoverEnabled,
+  soundEnabled,
+  isSpeaking,
   isFullscreen,
   onPrevious,
   onNext,
   onSkip,
   onReplay,
   onToggleVoiceover,
+  onToggleSound,
+  onReplayNarration,
   onToggleFullscreen,
   onChangeHospitalSize,
   onExit,
 }: DemoControlsProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.5 }}
-      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[90] px-4 py-3 bg-sidebar/90 backdrop-blur-xl rounded-2xl border border-sidebar-border shadow-xl"
-    >
+    <TooltipProvider>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[90] px-4 py-3 bg-sidebar/90 backdrop-blur-xl rounded-2xl border border-sidebar-border shadow-xl"
+      >
       <div className="flex items-center gap-2 md:gap-4">
         {/* Navigation */}
         <div className="flex items-center gap-1">
@@ -101,45 +119,109 @@ export function DemoControls({
 
         <div className="h-6 w-px bg-sidebar-border hidden sm:block" />
 
+        {/* Audio Controls */}
+        <div className="flex items-center gap-1">
+          {/* Sound Effects Toggle */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onToggleSound}
+                className={`h-9 w-9 hover:bg-sidebar-accent ${
+                  soundEnabled ? 'text-primary' : 'text-sidebar-foreground/50'
+                }`}
+              >
+                {soundEnabled ? (
+                  <Volume2 className="h-4 w-4" />
+                ) : (
+                  <VolumeX className="h-4 w-4" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {soundEnabled ? 'Mute sounds' : 'Enable sounds'}
+            </TooltipContent>
+          </Tooltip>
+
+          {/* Voiceover Toggle */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onToggleVoiceover}
+                className={`h-9 w-9 hover:bg-sidebar-accent ${
+                  voiceoverEnabled ? 'text-primary' : 'text-sidebar-foreground/50'
+                }`}
+              >
+                {voiceoverEnabled ? (
+                  <Mic className={`h-4 w-4 ${isSpeaking ? 'animate-pulse' : ''}`} />
+                ) : (
+                  <MicOff className="h-4 w-4" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {voiceoverEnabled ? 'Disable voiceover' : 'Enable voiceover'}
+            </TooltipContent>
+          </Tooltip>
+
+          {/* Replay Narration */}
+          {voiceoverEnabled && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onReplayNarration}
+                  className="h-9 w-9 text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
+                >
+                  <RefreshCw className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Replay narration</TooltipContent>
+            </Tooltip>
+          )}
+        </div>
+
+        <div className="h-6 w-px bg-sidebar-border" />
+          
         {/* Action Buttons */}
         <div className="flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onToggleVoiceover}
-            className="h-9 w-9 text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
-            title={voiceoverEnabled ? 'Mute voiceover' : 'Enable voiceover'}
-          >
-            {voiceoverEnabled ? (
-              <Volume2 className="h-4 w-4" />
-            ) : (
-              <VolumeX className="h-4 w-4" />
-            )}
-          </Button>
-          
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onToggleFullscreen}
-            className="h-9 w-9 text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent hidden md:flex"
-            title={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
-          >
-            {isFullscreen ? (
-              <Minimize className="h-4 w-4" />
-            ) : (
-              <Maximize className="h-4 w-4" />
-            )}
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onToggleFullscreen}
+                className="h-9 w-9 text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent hidden md:flex"
+              >
+                {isFullscreen ? (
+                  <Minimize className="h-4 w-4" />
+                ) : (
+                  <Maximize className="h-4 w-4" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+            </TooltipContent>
+          </Tooltip>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onReplay}
-            className="h-9 w-9 text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
-            title="Replay demo"
-          >
-            <RotateCcw className="h-4 w-4" />
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onReplay}
+                className="h-9 w-9 text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
+              >
+                <RotateCcw className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Replay demo</TooltipContent>
+          </Tooltip>
 
           <Button
             variant="ghost"
@@ -155,16 +237,21 @@ export function DemoControls({
         <div className="h-6 w-px bg-sidebar-border" />
 
         {/* Exit */}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onExit}
-          className="h-9 w-9 text-destructive/70 hover:text-destructive hover:bg-destructive/10"
-          title="Exit demo"
-        >
-          <X className="h-5 w-5" />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onExit}
+              className="h-9 w-9 text-destructive/70 hover:text-destructive hover:bg-destructive/10"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Exit demo</TooltipContent>
+        </Tooltip>
       </div>
     </motion.div>
+    </TooltipProvider>
   );
 }
