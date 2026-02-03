@@ -5,6 +5,35 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Rate limiting: Track unlock attempts per user
+const RATE_LIMIT_MAX_ATTEMPTS = 3;
+const RATE_LIMIT_WINDOW_MINUTES = 15;
+const unlockAttempts = new Map<string, { count: number; firstAttempt: number }>();
+
+const checkRateLimit = (userId: string): { allowed: boolean; message?: string } => {
+  const now = Date.now();
+  const windowMs = RATE_LIMIT_WINDOW_MINUTES * 60 * 1000;
+  const record = unlockAttempts.get(userId);
+
+  if (!record || (now - record.firstAttempt) > windowMs) {
+    // Reset or create new record
+    unlockAttempts.set(userId, { count: 1, firstAttempt: now });
+    return { allowed: true };
+  }
+
+  if (record.count >= RATE_LIMIT_MAX_ATTEMPTS) {
+    const remainingMs = windowMs - (now - record.firstAttempt);
+    const remainingMinutes = Math.ceil(remainingMs / 60000);
+    return { 
+      allowed: false, 
+      message: `Too many attempts. Please try again in ${remainingMinutes} minute(s).`
+    };
+  }
+
+  record.count++;
+  return { allowed: true };
+};
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -50,10 +79,35 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Check rate limit before processing
+    const rateLimitResult = checkRateLimit(user.id);
+    if (!rateLimitResult.allowed) {
+      console.warn(`Rate limit exceeded for user ${user.id}`);
+      return new Response(
+        JSON.stringify({ error: rateLimitResult.message }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Verify user has hospital_admin role
+    const { data: roles, error: rolesError } = await supabaseAdmin
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user.id);
+
+    if (rolesError || !roles?.some(r => r.role === "hospital_admin")) {
+      console.warn(`User ${user.id} attempted master unlock without admin role`);
+      return new Response(
+        JSON.stringify({ error: "Admin access required" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     // Get the password from request body
     const { password } = await req.json();
 
     if (!password || password !== masterPassword) {
+      console.warn(`Invalid master password attempt by user ${user.id}`);
       return new Response(
         JSON.stringify({ error: "Invalid password" }),
         { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -129,6 +183,9 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Log successful unlock for audit purposes
+    console.log(`Master plan unlocked by user ${user.id} for hospital ${profile.hospital_id}`);
+
     return new Response(
       JSON.stringify({ success: true, message: "Master plan unlocked successfully" }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -140,4 +197,5 @@ Deno.serve(async (req) => {
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
+});
 });
