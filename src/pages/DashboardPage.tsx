@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { Users, Activity, DollarSign, Bed, AlertTriangle, ArrowRight } from 'lucide-react';
+import { Users, Activity, DollarSign, Bed, AlertTriangle, ArrowRight, Play, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Header } from '@/components/layout/Header';
 import { MetricCard } from '@/components/dashboard/MetricCard';
 import { InsightCard } from '@/components/dashboard/InsightCard';
@@ -7,14 +8,17 @@ import { RiskAlertCard } from '@/components/dashboard/RiskAlertCard';
 import { TrendChart } from '@/components/dashboard/TrendChart';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePatients, useInsights, useMetrics } from '@/hooks/useHospitalData';
+import { useSalesDemoTrigger } from '@/hooks/useSalesDemoTrigger';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { mockDashboardMetrics, mockOperationalMetrics, mockTrendData, mockCostTrendData } from '@/data/mockData';
 import type { Patient, Insight, MetricData } from '@/types';
+import { SalesDemoMode } from '@/components/sales-demo';
 
 export default function DashboardPage() {
   const { user, hospital } = useAuth();
   const navigate = useNavigate();
+  const { shouldShowDemo, isChecking: demoChecking, markDemoAsSeen, triggerDemoManually } = useSalesDemoTrigger();
 
   const { data: dbPatients, isLoading: patientsLoading } = usePatients(hospital?.id);
   const { data: dbInsights, isLoading: insightsLoading } = useInsights(hospital?.id);
@@ -84,7 +88,12 @@ export default function DashboardPage() {
     <DollarSign className="h-5 w-5" />,
   ];
 
-  const isLoading = patientsLoading || insightsLoading || metricsLoading;
+  const isLoading = patientsLoading || insightsLoading || metricsLoading || demoChecking;
+
+  // Show Sales Demo Mode for first-time users
+  if (shouldShowDemo) {
+    return <SalesDemoMode onExit={markDemoAsSeen} />;
+  }
 
   if (isLoading) {
     return (
