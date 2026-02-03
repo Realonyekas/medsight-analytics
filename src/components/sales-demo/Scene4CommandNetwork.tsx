@@ -26,43 +26,44 @@ export function Scene4CommandNetwork({ config }: Scene4CommandNetworkProps) {
   const [emergencyAcknowledged, setEmergencyAcknowledged] = useState(0);
   const [totalToAcknowledge] = useState(Math.min(config.departments.length, 6));
 
-  const demoMessages: DemoMessage[] = [
-    {
-      id: 'msg-1',
-      type: 'handover',
-      from: 'Dr. Adeyemi (Night Shift)',
-      to: 'Dr. Okonkwo (Day Shift)',
-      content: 'Patient in Bed 12 showing improvement. Continue current medication. Handover complete.',
-      timestamp: new Date(),
-      status: 'read',
-    },
-    {
-      id: 'msg-2',
-      type: 'coordination',
-      from: 'Laboratory',
-      to: 'Internal Medicine',
-      content: 'Critical lab results ready for Patient MRN102847. Elevated markers detected.',
-      timestamp: new Date(),
-      status: 'delivered',
-    },
-    {
-      id: 'msg-3',
-      type: 'coordination',
-      from: 'Pharmacy',
-      to: 'ICU Ward',
-      content: 'Medication prepared for Patient Fatima B. Ready for pickup at dispensary.',
-      timestamp: new Date(),
-      status: 'sent',
-    },
-  ];
-
   useEffect(() => {
-    // Animate messages appearing
-    let index = 0;
+    const demoMessages: DemoMessage[] = [
+      {
+        id: 'msg-1',
+        type: 'handover',
+        from: 'Dr. Adeyemi (Night Shift)',
+        to: 'Dr. Okonkwo (Day Shift)',
+        content: 'Patient in Bed 12 showing improvement. Continue current medication. Handover complete.',
+        timestamp: new Date(),
+        status: 'read',
+      },
+      {
+        id: 'msg-2',
+        type: 'coordination',
+        from: 'Laboratory',
+        to: 'Internal Medicine',
+        content: 'Critical lab results ready for Patient MRN102847. Elevated markers detected.',
+        timestamp: new Date(),
+        status: 'delivered',
+      },
+      {
+        id: 'msg-3',
+        type: 'coordination',
+        from: 'Pharmacy',
+        to: 'ICU Ward',
+        content: 'Medication prepared for Patient Fatima B. Ready for pickup at dispensary.',
+        timestamp: new Date(),
+        status: 'sent',
+      },
+    ];
+
+    // Animate messages appearing one by one
+    let currentIndex = 0;
     const timer = setInterval(() => {
-      if (index < demoMessages.length) {
-        setMessages(prev => [...prev, demoMessages[index]]);
-        index++;
+      if (currentIndex < demoMessages.length) {
+        const msgToAdd = demoMessages[currentIndex];
+        setMessages(prev => [...prev, msgToAdd]);
+        currentIndex++;
       } else {
         clearInterval(timer);
         setTimeout(() => setShowEmergency(true), 1000);
