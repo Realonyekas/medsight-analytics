@@ -152,30 +152,64 @@ const handler = async (req: Request): Promise<Response> => {
         console.error("Failed to send internal notification:", emailError);
       }
 
-      // Send WhatsApp notification via CallMeBot API
-      const whatsappNumber = "2347030788968";
-      const whatsappMessage = encodeURIComponent(
-        `🏥 *New Demo Request*\n\n` +
-        `*Name:* ${sanitizedName}\n` +
-        `*Email:* ${sanitizedEmail}\n` +
-        `*Phone:* ${sanitizedPhone || "Not provided"}\n` +
-        `*Hospital:* ${sanitizedHospital}\n` +
-        `*Message:* ${sanitizedMessage || "No message"}\n\n` +
-        `_Submitted: ${new Date().toLocaleString()}_`
-      );
+      // Send WhatsApp notification via Meta Cloud API
+      const whatsappAccessToken = Deno.env.get("WHATSAPP_ACCESS_TOKEN");
+      const whatsappPhoneNumberId = Deno.env.get("WHATSAPP_PHONE_NUMBER_ID");
       
-      // Using WhatsApp Business API through CallMeBot (free service)
-      const callMeBotApiKey = Deno.env.get("CALLMEBOT_API_KEY");
-      if (callMeBotApiKey) {
+      if (whatsappAccessToken && whatsappPhoneNumberId) {
         try {
-          const whatsappUrl = `https://api.callmebot.com/whatsapp.php?phone=${whatsappNumber}&text=${whatsappMessage}&apikey=${callMeBotApiKey}`;
-          await fetch(whatsappUrl);
-          console.log("WhatsApp notification sent");
+          // Get all active notification recipients for demo_request type
+          const { data: recipients } = await supabase
+            .from("whatsapp_notification_recipients")
+            .select("phone_number")
+            .eq("is_active", true)
+            .contains("notification_types", ["demo_request"]);
+
+          const whatsappMessage = 
+            `🏥 *New Demo Request*\n\n` +
+            `*Name:* ${sanitizedName}\n` +
+            `*Email:* ${sanitizedEmail}\n` +
+            `*Phone:* ${sanitizedPhone || "Not provided"}\n` +
+            `*Hospital:* ${sanitizedHospital}\n` +
+            `*Message:* ${sanitizedMessage || "No message"}\n\n` +
+            `_Submitted: ${new Date().toLocaleString()}_`;
+
+          // Send to all recipients
+          for (const recipient of recipients || []) {
+            try {
+              const response = await fetch(
+                `https://graph.facebook.com/v18.0/${whatsappPhoneNumberId}/messages`,
+                {
+                  method: "POST",
+                  headers: {
+                    "Authorization": `Bearer ${whatsappAccessToken}`,
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    messaging_product: "whatsapp",
+                    recipient_type: "individual",
+                    to: recipient.phone_number,
+                    type: "text",
+                    text: { body: whatsappMessage },
+                  }),
+                }
+              );
+              
+              if (response.ok) {
+                console.log("WhatsApp notification sent to:", recipient.phone_number);
+              } else {
+                const errorData = await response.text();
+                console.error("WhatsApp send error:", errorData);
+              }
+            } catch (sendError) {
+              console.error("Failed to send to recipient:", sendError);
+            }
+          }
         } catch (whatsappError) {
           console.error("Failed to send WhatsApp notification:", whatsappError);
         }
       } else {
-        console.warn("CALLMEBOT_API_KEY not configured, skipping WhatsApp notification");
+        console.warn("WhatsApp Business API not configured, skipping notifications");
       }
 
       // Send confirmation to requester
