@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Shield, Building2, CreditCard, Check, Loader2, Receipt, KeyRound, Crown } from 'lucide-react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { Shield, Building2, CreditCard, Check, Loader2, Receipt, KeyRound, Crown, Play, Monitor } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription, useDepartments } from '@/hooks/useHospitalData';
 import { usePaystack } from '@/hooks/usePaystack';
+import { useSalesDemoTrigger } from '@/hooks/useSalesDemoTrigger';
 import { subscriptionPlans } from '@/data/mockData';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -17,9 +18,11 @@ import { toast } from 'sonner';
 
 export default function SettingsPage() {
   const { hospital, user, session } = useAuth();
+  const navigate = useNavigate();
   const { data: subscription, isLoading: subLoading, refetch } = useSubscription(hospital?.id);
   const { data: departments, isLoading: deptLoading } = useDepartments(hospital?.id);
   const { initializePayment, verifyPayment, isLoading: paymentLoading } = usePaystack();
+  const { triggerDemoManually, resetDemoStatus } = useSalesDemoTrigger();
   const [searchParams, setSearchParams] = useSearchParams();
   const subscriptionRef = useRef<HTMLDivElement>(null);
   const [masterPassword, setMasterPassword] = useState('');
@@ -253,6 +256,39 @@ export default function SettingsPage() {
             </div>
           )}
         </section>
+
+        {/* Presentation Mode - for SuperAdmins */}
+        {user?.role === 'hospital_admin' && (
+          <section className="card-healthcare bg-gradient-to-r from-primary/5 to-success/5 border-primary/20">
+            <div className="flex items-center gap-3 mb-4">
+              <Monitor className="h-5 w-5 text-primary" />
+              <h2 className="section-title">Presentation Mode</h2>
+            </div>
+            <p className="text-sm text-muted-foreground mb-4">
+              Launch the cinematic Sales Demo for boardroom presentations or to show executives the platform's value.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Button 
+                onClick={() => navigate('/sales-demo')} 
+                className="gap-2"
+              >
+                <Play className="h-4 w-4" />
+                Launch Sales Demo
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  resetDemoStatus();
+                  triggerDemoManually();
+                  navigate('/dashboard');
+                }}
+                className="gap-2"
+              >
+                Replay Demo on Dashboard
+              </Button>
+            </div>
+          </section>
+        )}
 
         {/* Payment History */}
         <section className="card-healthcare">

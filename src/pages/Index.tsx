@@ -166,19 +166,23 @@ const Index = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
+              <Link to="/sales-demo">
+                <Button size="lg" className="w-full sm:w-auto text-base font-semibold px-8 h-12 gap-2 bg-gradient-to-r from-primary to-primary/80 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all">
+                  <Play className="h-5 w-5" />
+                  Experience the Platform
+                </Button>
+              </Link>
               <Link to="/demo-dashboard">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto text-base font-semibold px-8 h-12 gap-2">
-                  <Play className="h-5 w-5" />
+                  <Monitor className="h-5 w-5" />
                   View Dashboard
                 </Button>
               </Link>
-              <Link to="/login?signup=true">
-                <Button size="lg" className="w-full sm:w-auto text-base font-semibold px-8 h-12 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all">
-                  Sign Up
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
             </div>
+            <p className="text-sm text-muted-foreground mt-4 flex items-center gap-2">
+              <span className="inline-block w-2 h-2 rounded-full bg-success animate-pulse" />
+              3-minute guided demo • No signup required
+            </p>
           </div>
         </div>
       </section>
